@@ -41,10 +41,11 @@
     <Compile Include="Game1.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="IEnemy.cs" />
     <Compile Include="IFluidItems.cs" />
     <Compile Include="ILevelEditor.cs" />
     <Compile Include="IMainMenu.cs" />
-    <Compile Include="iMoveableObj.cs" />
+    <Compile Include="IMoveableObj.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IStaticObj.cs" />
     <Compile Include="Program.cs">

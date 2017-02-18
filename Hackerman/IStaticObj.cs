@@ -8,5 +8,10 @@ namespace Hackerman
 {
     interface IStaticObj
     {
+        void LaunchSoundEffect();
+        string SoundEffect { get; set; }
+        string BackgroundTexture { get; set; }
+        void SetBackgroundTexture();
+
     }
 }

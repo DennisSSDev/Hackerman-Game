@@ -8,5 +8,11 @@ namespace Hackerman
 {
     interface IFluidItems
     {
+        int Rounds { get; set; }
+        int HighScore { get; set; }
+        string RandomEvent { get; set; }
+        int CountRounds();
+        int CountHS();
+        string LaunchRandomEvent();
     }
 }

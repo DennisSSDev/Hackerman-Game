@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Hackerman
 {
-    interface iMoveableObj
+    interface IMoveableObj
     {
+        string Walls { get; set; }
+        void Collision(IPlayer player, IEnemy enemy);
     }
 }
