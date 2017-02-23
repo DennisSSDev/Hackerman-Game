@@ -10,10 +10,11 @@ namespace Hackerman
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
+        Texture2D triangle;
         SpriteBatch spriteBatch;
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
-
+        Vector2 position;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -30,7 +31,10 @@ namespace Hackerman
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            position = new Vector2(graphics.GraphicsDevice.Viewport.
+                       Width / 2,
+                                    graphics.GraphicsDevice.Viewport.
+                                    Height / 2);
 
             base.Initialize();
         }
@@ -47,6 +51,7 @@ namespace Hackerman
             // TODO: use this.Content to load your game content here
             mainmenu = Content.Load<Texture2D>("knowledge");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
+            triangle = Content.Load<Texture2D>("Triangle");
         }
 
         /// <summary>
@@ -68,7 +73,11 @@ namespace Hackerman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            MouseState state = Mouse.GetState();
+
+            position.X = state.X;
+            position.Y = state.Y;
+            
 
             base.Update(gameTime);
         }
@@ -84,6 +93,7 @@ namespace Hackerman
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+            spriteBatch.Draw(triangle, position, scale: new Vector2(0.6f));
             spriteBatch.End();
             base.Draw(gameTime);
         }
