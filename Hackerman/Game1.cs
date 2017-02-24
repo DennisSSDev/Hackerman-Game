@@ -77,7 +77,6 @@ namespace Hackerman
 
             position.X = state.X;
             position.Y = state.Y;
-            
 
             base.Update(gameTime);
         }
@@ -93,7 +92,7 @@ namespace Hackerman
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
-            spriteBatch.Draw(triangle, position, scale: new Vector2(0.6f));
+            spriteBatch.Draw(triangle, position, scale: new Vector2(0.3f));
             spriteBatch.End();
             base.Draw(gameTime);
         }
