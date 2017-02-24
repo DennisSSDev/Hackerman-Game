@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Hackerman
 {
@@ -15,6 +16,7 @@ namespace Hackerman
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
         Vector2 position;
+        Sprite _arrow;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -35,7 +37,14 @@ namespace Hackerman
                        Width / 2,
                                     graphics.GraphicsDevice.Viewport.
                                     Height / 2);
-
+            _arrow = new Sprite(triangle)
+            {
+                Position = new Vector2(100, 100),
+                Color = Color.White,
+                Rotation = 0f,
+                Scale = 1f,
+                Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
+            };
             base.Initialize();
         }
 
@@ -74,10 +83,12 @@ namespace Hackerman
                 Exit();
 
             MouseState state = Mouse.GetState();
+            Vector2 mousePosition = new Vector2(state.X, state.Y);
+            Vector2 dPos = _arrow.Position - mousePosition;
 
-            position.X = state.X;
-            position.Y = state.Y;
-
+            _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
+            //position.X = state.X;
+            //position.Y = state.Y;
             base.Update(gameTime);
         }
 
@@ -91,6 +102,7 @@ namespace Hackerman
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            _arrow.Draw(spriteBatch, gameTime);
             spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
             spriteBatch.Draw(triangle, position, scale: new Vector2(0.3f));
             spriteBatch.End();
