@@ -15,7 +15,6 @@ namespace Hackerman
         SpriteBatch spriteBatch;
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
-        Vector2 position;
         Sprite _arrow;
         public Game1()
         {
@@ -33,13 +32,10 @@ namespace Hackerman
         /// </summary>
         protected override void Initialize()
         {
-            position = new Vector2(graphics.GraphicsDevice.Viewport.
-                       Width / 2,
-                                    graphics.GraphicsDevice.Viewport.
-                                    Height / 2);
+            triangle = Content.Load<Texture2D>("Triangle");
             _arrow = new Sprite(triangle)
             {
-                Position = new Vector2(100, 100),
+                Position = new Vector2(300, 300),
                 Color = Color.White,
                 Rotation = 0f,
                 Scale = 1f,
@@ -60,7 +56,7 @@ namespace Hackerman
             // TODO: use this.Content to load your game content here
             mainmenu = Content.Load<Texture2D>("knowledge");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
-            triangle = Content.Load<Texture2D>("Triangle");
+            
         }
 
         /// <summary>
@@ -102,9 +98,8 @@ namespace Hackerman
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            _arrow.Draw(spriteBatch, gameTime);
             spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
-            spriteBatch.Draw(triangle, position, scale: new Vector2(0.3f));
+            _arrow.Draw(spriteBatch, gameTime);
             spriteBatch.End();
             base.Draw(gameTime);
         }
