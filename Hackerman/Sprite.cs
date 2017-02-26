@@ -12,7 +12,6 @@ namespace Hackerman
     class Sprite
     {
         public Texture2D Texture { get; private set; }
-
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public float Scale { get; set; }
@@ -23,6 +22,10 @@ namespace Hackerman
         public Sprite(Texture2D texture)
         {
             this.Texture = texture;
+        }
+
+        public Sprite()
+        {
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

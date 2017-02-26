@@ -15,7 +15,12 @@ namespace Hackerman
         SpriteBatch spriteBatch;
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
+        Texture2D dot;
         Sprite _arrow;
+        Sprite _dot;
+        MouseState state;
+        Player newPlayer;
+        //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -32,15 +37,7 @@ namespace Hackerman
         /// </summary>
         protected override void Initialize()
         {
-            triangle = Content.Load<Texture2D>("Triangle");
-            _arrow = new Sprite(triangle)
-            {
-                Position = new Vector2(300, 300),
-                Color = Color.White,
-                Rotation = 0f,
-                Scale = 1f,
-                Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
-            };
+            newPlayer = new Player(2, 10);
             base.Initialize();
         }
 
@@ -50,6 +47,24 @@ namespace Hackerman
         /// </summary>
         protected override void LoadContent()
         {
+            triangle = Content.Load<Texture2D>("Triangle");
+            dot = Content.Load<Texture2D>("Dot1");
+            _arrow = new Sprite(triangle)
+            {
+                Position = new Vector2(300, 300),
+                Color = Color.White,
+                Rotation = 0f,
+                Scale = 0.75f,
+                Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
+            };
+            _dot = new Sprite(dot)
+            {
+                Position = new Vector2(300, 400),
+                Color = Color.White,
+                Rotation = 0f,
+                Scale = 0.3f,
+                Origin = new Vector2(dot.Bounds.Center.X, dot.Bounds.Center.Y)
+            };
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -77,14 +92,62 @@ namespace Hackerman
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            
 
-            MouseState state = Mouse.GetState();
+            state = Mouse.GetState();
             Vector2 mousePosition = new Vector2(state.X, state.Y);
-            Vector2 dPos = _arrow.Position - mousePosition;
 
+            Vector2 dPos = _arrow.Position - mousePosition;
+            
             _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
-            //position.X = state.X;
-            //position.Y = state.Y;
+            _dot.Position = mousePosition;
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                Vector2 revert = new Vector2(newPlayer.Speed, newPlayer.Speed);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                Vector2 revert = new Vector2(newPlayer.Speed, -newPlayer.Speed);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-newPlayer.Speed, -newPlayer.Speed);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-newPlayer.Speed, newPlayer.Speed);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                Vector2 revert = new Vector2(newPlayer.Speed, 0);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-10, 0);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-1* newPlayer.Speed, 0);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                Vector2 revert = new Vector2(0, -1*newPlayer.Speed);
+                _arrow.Position -= revert;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.W))
+            {
+                Vector2 revert = new Vector2(0, newPlayer.Speed);
+                _arrow.Position -= revert;
+            }
+            
+
             base.Update(gameTime);
         }
 
@@ -100,6 +163,7 @@ namespace Hackerman
             spriteBatch.Begin();
             spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
             _arrow.Draw(spriteBatch, gameTime);
+            _dot.Draw(spriteBatch, gameTime);
             spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -13,7 +13,6 @@ namespace Hackerman
         int Speed { get; set; }
         void AttackPlayer(IPlayer player);
         void FindPlayer(IPlayer player);
-        string EnemyTexture { get; set; }
         int CountOfEnemies();//this method will help the round method determine if all the enmies are dead
     }
 }
