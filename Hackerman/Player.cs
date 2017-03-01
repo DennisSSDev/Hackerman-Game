@@ -9,6 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
 {
+    enum PlayerEnum
+    {
+        Alive, 
+        Dead,
+        LHealth, // Lose health 
+        GameOver,
+        ScoreUp
+    };
+
     class Player : IPlayer
     {
         public int Health { get; set; }

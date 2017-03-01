@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace Hackerman
 {
+    enum EnemyEnum
+    {
+        Dead, 
+        Attack,
+        Spawn
+    };
+
     class Enemy : IEnemy
     {
         public int Speed { get; set; }
