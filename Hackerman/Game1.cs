@@ -27,7 +27,7 @@ namespace Hackerman
         Sprite _dot;
         MouseState state;
         Player _arrow;
-        ControlState cState;
+        ControlState cState;//make use of this
         Vector2 dPos = new Vector2(0, 0);
 
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
