@@ -18,7 +18,7 @@ namespace Hackerman
         ScoreUp
     };
 
-    class Player : IPlayer
+    class Player : Sprite, IPlayer
     {
         public int Health { get; set; }
         public int Speed { get; set; }
@@ -28,7 +28,8 @@ namespace Hackerman
 
         }
 
-        public Player(int health, int speed) 
+        public Player(int xR, int yR, int height, int width, int xV, int yV, float pRotation, float pScale, Color pColor, int health, int speed)
+            :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)
         {
             this.Health = health;
             this.Speed = speed;

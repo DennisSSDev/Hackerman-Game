@@ -5,9 +5,17 @@ using System;
 
 namespace Hackerman
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+    enum ControlState
+    {//Add enums so that they work with controls
+        Left,
+        Right,
+        Up,
+        Down,
+        TLeftCorner,
+        TRightCorner,
+        BLeftCorner,
+        BRightCorner
+    };
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -16,10 +24,12 @@ namespace Hackerman
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
         Texture2D dot;
-        Sprite _arrow;
         Sprite _dot;
         MouseState state;
-        Player newPlayer;
+        Player _arrow;
+        ControlState cState;
+        Vector2 dPos = new Vector2(0, 0);
+
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
         {
@@ -27,6 +37,64 @@ namespace Hackerman
             graphics.PreferredBackBufferHeight = 648;
             graphics.PreferredBackBufferWidth = 1150;
             Content.RootDirectory = "Content";
+        }
+
+        public void playerControls()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                Vector2 revert = new Vector2(_arrow.Speed, -_arrow.Speed);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-_arrow.Speed, -_arrow.Speed);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-_arrow.Speed, _arrow.Speed);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                Vector2 revert = new Vector2(_arrow.Speed, 0);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-10, 0);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Vector2 revert = new Vector2(-1 * _arrow.Speed, 0);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                Vector2 revert = new Vector2(0, -1 * _arrow.Speed);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.W))
+            {
+                Vector2 revert = new Vector2(0, _arrow.Speed);
+                _arrow.X -= (int)revert.X;
+                _arrow.Y -= (int)revert.Y;
+            }
         }
 
         /// <summary>
@@ -37,7 +105,6 @@ namespace Hackerman
         /// </summary>
         protected override void Initialize()
         {
-            newPlayer = new Player(2, 10);
             base.Initialize();
         }
 
@@ -48,30 +115,25 @@ namespace Hackerman
         protected override void LoadContent()
         {
             triangle = Content.Load<Texture2D>("Triangle");
+            
             dot = Content.Load<Texture2D>("Dot1");
-            _arrow = new Sprite(triangle)
+            
+            _arrow = new Player(100, 100, 100, 100, 100,100, 0f, 0.75f, Color.White, 10, 5)
             {
-                Position = new Vector2(300, 300),
-                Color = Color.White,
-                Rotation = 0f,
-                Scale = 0.75f,
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
-            _dot = new Sprite(dot)
+            _dot = new Sprite(300, 400, 50, 50, 300, 400, 0f, 0.3f, Color.White)
             {
-                Position = new Vector2(300, 400),
-                Color = Color.White,
-                Rotation = 0f,
-                Scale = 0.3f,
                 Origin = new Vector2(dot.Bounds.Center.X, dot.Bounds.Center.Y)
             };
+            _arrow.Texture = triangle;
+            _dot.Texture = dot;
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
             mainmenu = Content.Load<Texture2D>("knowledge");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
-            
         }
 
         /// <summary>
@@ -97,56 +159,13 @@ namespace Hackerman
             state = Mouse.GetState();
             Vector2 mousePosition = new Vector2(state.X, state.Y);
 
-            Vector2 dPos = _arrow.Position - mousePosition;
+            dPos.X = _arrow.X - state.X;
+            dPos.Y = _arrow.Y - state.Y;
             
             _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
-            _dot.Position = mousePosition;
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Vector2 revert = new Vector2(newPlayer.Speed, newPlayer.Speed);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Vector2 revert = new Vector2(newPlayer.Speed, -newPlayer.Speed);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-newPlayer.Speed, -newPlayer.Speed);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-newPlayer.Speed, newPlayer.Speed);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Vector2 revert = new Vector2(newPlayer.Speed, 0);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-10, 0);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-1* newPlayer.Speed, 0);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Vector2 revert = new Vector2(0, -1*newPlayer.Speed);
-                _arrow.Position -= revert;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Vector2 revert = new Vector2(0, newPlayer.Speed);
-                _arrow.Position -= revert;
-            }
-            
+            _dot.X = (int)mousePosition.X;
+            _dot.Y = (int)mousePosition.Y;
+            playerControls();
 
             base.Update(gameTime);
         }
