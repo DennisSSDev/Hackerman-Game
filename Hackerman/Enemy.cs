@@ -9,29 +9,29 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
 {
-    enum EnemyEnum
+    /*enum EnemyEnum
     {
         Dead, 
         Attack,
         Spawn
-    };
+    };*/
 
     class Enemy : Sprite, IEnemy
     {
         private int health;
         private int speed;
-        private int streangth;
+        private int strength;
         private bool alive = true;
         public int Speed { get { return speed; } set { speed = value; } }
         public bool Alive { get { return alive; } set { alive = value; } }
         public int Strength { get { return streangth; } set { Strength = value; } }
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
-            float pScale, Color pColor, int speed = 3, int streangth = 1, int health = 1, bool alive = true)
+            float pScale, Color pColor, int speed = 3, int strength = 1, int health = 1, bool alive = true)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   
         {
             this.speed = speed;
             this.health = health;
-            this.streangth = streangth;
+            this.strength = strength;
             this.alive = alive;
 
         }

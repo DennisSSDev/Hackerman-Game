@@ -6,16 +6,15 @@ using System.Collections.Generic;
 
 namespace Hackerman
 {
-    enum ControlState
-    {//Add enums so that they work with controls
-        Left,
-        Right,
-        Up,
-        Down,
-        TLeftCorner,
-        TRightCorner,
-        BLeftCorner,
-        BRightCorner
+    enum GameState
+    {
+        Game,
+        Menu,
+        Help, 
+        GameOver,
+        Exit
+        // Just need a state for the game itself, 
+        // not for individual things
     };
     public class Game1 : Game
     {
@@ -31,7 +30,7 @@ namespace Hackerman
         Player _arrow;
         Enemy newEnemy;
         double timer = 0;
-        ControlState cState;//make use of this
+        GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
         Vector2 dPos = new Vector2(0, 0);
 
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
@@ -167,22 +166,54 @@ namespace Hackerman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             
+            // Menu State 
+            if(cState == GameState.Menu)
+            {
+                // Somehow we need to interact with rectangles and the mouse click
+                // if(user clicks help)
+                // { cState = GameState.Help }
+                // else if(user clicks Exit) 
+                // { cState = GameState.Exit }
+                // else if(user clicks play) 
+                // { cState = GameState.Game }
+            }
 
-            state = Mouse.GetState();
-            Vector2 mousePosition = new Vector2(state.X, state.Y);
+            // Game State 
+            else if (cState == GameState.Game)
+            {
+                state = Mouse.GetState();
+                Vector2 mousePosition = new Vector2(state.X, state.Y);
 
-            dPos.X = _arrow.X - state.X;
-            dPos.Y = _arrow.Y - state.Y;
-            
-            _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
-            _dot.X = (int)mousePosition.X;
-            _dot.Y = (int)mousePosition.Y;
-            
-            PlayerControls();
+                dPos.X = _arrow.X - state.X;
+                dPos.Y = _arrow.Y - state.Y;
 
-            timer += gameTime.ElapsedGameTime.TotalSeconds;
-            newEnemy.FindPlayer(_arrow);
-            newEnemy.AttackPlayer(_arrow);
+                _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
+                _dot.X = (int)mousePosition.X;
+                _dot.Y = (int)mousePosition.Y;
+
+                PlayerControls();
+
+                timer += gameTime.ElapsedGameTime.TotalSeconds;
+                newEnemy.FindPlayer(_arrow);
+                newEnemy.AttackPlayer(_arrow);
+
+                 if(_arrow.Health == 0 || timer == 0) 
+                 {
+                    cState = GameState.GameOver; 
+                 }
+            }
+
+            // Menu State will have player go back to main menu for now 
+            else if(cState == GameState.GameOver)
+            {
+                // Check to see if they just press enter 
+                // or something similar
+            }
+
+            else if(cState == GameState.Exit)
+            {
+                // Exit program 
+            }
 
             base.Update(gameTime);
         }
@@ -197,10 +228,29 @@ namespace Hackerman
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
-            _arrow.Draw(spriteBatch, gameTime);
-            newEnemy.Draw(spriteBatch, gameTime);
-            _dot.Draw(spriteBatch, gameTime);
+            if(cState == GameState.Menu)
+            {
+                // Draw menu screen
+            }
+
+            if (cState == GameState.Help)
+            {
+                // Draw help screen 
+            }
+
+            if (cState == GameState.Game)
+            {
+                spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+                _arrow.Draw(spriteBatch, gameTime);
+                newEnemy.Draw(spriteBatch, gameTime);
+                _dot.Draw(spriteBatch, gameTime);
+                // Also need to draw the interface 
+            }
+
+            if(cState == GameState.GameOver)
+            {
+                // Draw game over screen
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }
