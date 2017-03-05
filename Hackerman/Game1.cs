@@ -39,7 +39,7 @@ namespace Hackerman
             Content.RootDirectory = "Content";
         }
 
-        public void playerControls()
+        public void PlayerControls()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
             {
@@ -165,7 +165,7 @@ namespace Hackerman
             _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
             _dot.X = (int)mousePosition.X;
             _dot.Y = (int)mousePosition.Y;
-            playerControls();
+            PlayerControls();
 
             base.Update(gameTime);
         }
