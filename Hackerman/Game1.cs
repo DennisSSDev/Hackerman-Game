@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace Hackerman
 {
@@ -24,9 +25,12 @@ namespace Hackerman
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
         Texture2D dot;
+        Texture2D enemyTex;
         Sprite _dot;
         MouseState state;
         Player _arrow;
+        Enemy newEnemy;
+        double timer = 0;
         ControlState cState;//make use of this
         Vector2 dPos = new Vector2(0, 0);
 
@@ -39,7 +43,7 @@ namespace Hackerman
             Content.RootDirectory = "Content";
         }
 
-        public void PlayerControls()
+        public void PlayerControls()//allows the control of the player 
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
             {
@@ -105,6 +109,9 @@ namespace Hackerman
         /// </summary>
         protected override void Initialize()
         {
+            //We should initialize the player only, without the dot since if we initialize the dot,
+            //it might appear on the menu screen, we don't want that 
+            
             base.Initialize();
         }
 
@@ -117,17 +124,22 @@ namespace Hackerman
             triangle = Content.Load<Texture2D>("Triangle");
             
             dot = Content.Load<Texture2D>("Dot1");
+
+            enemyTex = Content.Load<Texture2D>("bug");
             
-            _arrow = new Player(100, 100, 100, 100, 100,100, 0f, 0.75f, Color.White, 10, 5)
-            {
-                Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
-            };
+            newEnemy = new Enemy(0, 0, 100, 100, 0, 0, 0f, 5f, Color.White);
+           
             _dot = new Sprite(300, 400, 50, 50, 300, 400, 0f, 0.3f, Color.White)
             {
                 Origin = new Vector2(dot.Bounds.Center.X, dot.Bounds.Center.Y)
             };
+            _arrow = new Player(300, 300, 100, 100, 100, 100, 0f, 0.75f, Color.White, 10, 5)
+            {
+                Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
+            };
             _arrow.Texture = triangle;
             _dot.Texture = dot;
+            newEnemy.Texture = enemyTex;
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -165,7 +177,12 @@ namespace Hackerman
             _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
             _dot.X = (int)mousePosition.X;
             _dot.Y = (int)mousePosition.Y;
+            
             PlayerControls();
+
+            timer += gameTime.ElapsedGameTime.TotalSeconds;
+            newEnemy.FindPlayer(_arrow);
+            newEnemy.AttackPlayer(_arrow);
 
             base.Update(gameTime);
         }
@@ -182,6 +199,7 @@ namespace Hackerman
             spriteBatch.Begin();
             spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
             _arrow.Draw(spriteBatch, gameTime);
+            newEnemy.Draw(spriteBatch, gameTime);
             _dot.Draw(spriteBatch, gameTime);
             spriteBatch.End();
             base.Draw(gameTime);

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
 {
@@ -13,20 +16,33 @@ namespace Hackerman
         Spawn
     };
 
-    class Enemy : IEnemy
+    class Enemy : Sprite, IEnemy
     {
-        public int Speed { get; set; }
-
-        public int Strength { get; set; }
-
-        public Enemy(int speed, int strength)
+        private int health;
+        private int speed;
+        private int streangth;
+        private bool alive = true;
+        public int Speed { get { return speed; } set { speed = value; } }
+        public bool Alive { get { return alive; } set { alive = value; } }
+        public int Strength { get { return streangth; } set { Strength = value; } }
+        public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
+            float pScale, Color pColor, int speed = 3, int streangth = 1, int health = 1, bool alive = true)
+            :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   
         {
+            this.speed = speed;
+            this.health = health;
+            this.streangth = streangth;
+            this.alive = alive;
 
         }
 
-        public void AttackPlayer(IPlayer player)
+        public void AttackPlayer(Player obj)
         {
-            throw new NotImplementedException();
+            if (this.Position.Intersects(obj.Position))
+            {
+                obj.X-=25;
+                obj.Health--;
+            }
         }
 
         public void Collision(IPlayer player, IMoveableObj wall)
@@ -39,9 +55,16 @@ namespace Hackerman
             throw new NotImplementedException();
         }
 
-        public void FindPlayer(IPlayer player)
+        public void FindPlayer(Player obj)
         {
-            throw new NotImplementedException();
+                if (this.X != obj.X && this.Y != obj.Y)
+                {
+                    int distanceX = obj.X - this.X;
+                    int distanceY = obj.Y - this.Y;
+                    this.X += (int)Math.Round(distanceX * 0.01);
+                    this.Y += (int)Math.Round(distanceY * 0.01);
+                }
+            
         }
     }
 }

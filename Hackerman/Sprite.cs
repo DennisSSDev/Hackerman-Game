@@ -45,7 +45,7 @@ namespace Hackerman
         {
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             spriteBatch.Draw(this.Texture,
                              this.Position,
