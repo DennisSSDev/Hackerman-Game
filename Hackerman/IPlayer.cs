@@ -10,8 +10,6 @@ namespace Hackerman
     {
         void Collision(IEnemy enemy, IMoveableObj walls);
         void Move();
-        void Aim();
-        void Shoot();
         void Kill(IEnemy enemy);
         int Health { get; set; }
         int Speed { get; set; }

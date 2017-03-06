@@ -23,7 +23,6 @@ namespace Hackerman
         private int health;
         private int speed;
         private int totalScore;
-        private int strength;
 
         /// <summary>
         /// Important!!! since you will need to draw the laser, it cannot be in the player class, 
@@ -36,26 +35,19 @@ namespace Hackerman
         public int Health { get { return health; } set { health = value; } }
         public int Speed { get { return speed; } set { speed = value; } }
         public int TotalScore { get { return totalScore; } set { totalScore = value; } }
-        public int Strength { get { return strength; } set { strength = value; } }
+        //player will not have a strength stat since the laser deals damage
         public Player()
         {
 
         }
 
         public Player(int xR, int yR, int height, int width, int xV, int yV, float pRotation, float pScale, Color pColor,
-            int health = 2, int speed = 10, int pTotalScore  = 0, int strength = 1)
+            int health = 2, int speed = 10, int pTotalScore  = 0)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)
         {
             this.health = health;
             this.speed = speed;
             this.totalScore = pTotalScore;
-            this.strength = strength;
-        }
-
-
-        public void Aim()
-        {
-            throw new NotImplementedException();
         }
 
         public bool Alive(int health)
@@ -77,12 +69,6 @@ namespace Hackerman
         {
             throw new NotImplementedException();
         }
-
-        public void Shoot()
-        {
-            
-        }
-
         public void SoundEffect()
         {
             throw new NotImplementedException();

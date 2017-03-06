@@ -24,7 +24,7 @@ namespace Hackerman
         private bool alive = true;
         public int Speed { get { return speed; } set { speed = value; } }
         public bool Alive { get { return alive; } set { alive = value; } }
-        public int Strength { get { return streangth; } set { Strength = value; } }
+        public int Strength { get { return strength; } set { strength = value; } }
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
             float pScale, Color pColor, int speed = 3, int strength = 1, int health = 1, bool alive = true)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   

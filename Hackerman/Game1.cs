@@ -14,7 +14,7 @@ namespace Hackerman
         GameOver,
         Exit
         // Just need a state for the game itself, 
-        // not for individual things
+        // not for individual 
     };
     public class Game1 : Game
     {
@@ -25,9 +25,11 @@ namespace Hackerman
         Texture2D interfacaOfPlay;
         Texture2D dot;
         Texture2D enemyTex;
+        Texture2D laserTex;
         Sprite _dot;
         MouseState state;
         Player _arrow;
+        Laser newLaser;
         Enemy newEnemy;
         double timer = 0;
         GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
@@ -41,7 +43,7 @@ namespace Hackerman
             graphics.PreferredBackBufferWidth = 1150;
             Content.RootDirectory = "Content";
         }
-
+        //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
@@ -98,6 +100,10 @@ namespace Hackerman
                 _arrow.X -= (int)revert.X;
                 _arrow.Y -= (int)revert.Y;
             }
+            else if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                newLaser.Visible = true;
+            }
         }
 
         /// <summary>
@@ -125,9 +131,13 @@ namespace Hackerman
             dot = Content.Load<Texture2D>("Dot1");
 
             enemyTex = Content.Load<Texture2D>("bug");
+
+            laserTex = Content.Load<Texture2D>("Health");
             
             newEnemy = new Enemy(0, 0, 100, 100, 0, 0, 0f, 5f, Color.White);
-           
+
+            
+
             _dot = new Sprite(300, 400, 50, 50, 300, 400, 0f, 0.3f, Color.White)
             {
                 Origin = new Vector2(dot.Bounds.Center.X, dot.Bounds.Center.Y)
@@ -136,9 +146,11 @@ namespace Hackerman
             {
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
+            newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, _arrow.Rotation, 1f, Color.White);
             _arrow.Texture = triangle;
             _dot.Texture = dot;
             newEnemy.Texture = enemyTex;
+            newLaser.Texture = laserTex;
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -183,7 +195,12 @@ namespace Hackerman
             {
                 state = Mouse.GetState();
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
-
+                if(newLaser.Visible == false)
+                {
+                    newLaser.X = _arrow.X;
+                    newLaser.Y = _arrow.Y;
+                    newLaser.Rotation = _arrow.Rotation;
+                }
                 dPos.X = _arrow.X - state.X;
                 dPos.Y = _arrow.Y - state.Y;
 
@@ -196,6 +213,10 @@ namespace Hackerman
                 timer += gameTime.ElapsedGameTime.TotalSeconds;
                 newEnemy.FindPlayer(_arrow);
                 newEnemy.AttackPlayer(_arrow);
+                if (newLaser.Visible)
+                {
+                    newLaser.Shoot(_arrow);
+                }
 
                  if(_arrow.Health == 0 || timer == 0) 
                  {
@@ -244,6 +265,10 @@ namespace Hackerman
                 _arrow.Draw(spriteBatch, gameTime);
                 newEnemy.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);
+                if(newLaser.Visible == true)
+                {
+                    newLaser.Draw(spriteBatch, gameTime);
+                }
                 // Also need to draw the interface 
             }
 
