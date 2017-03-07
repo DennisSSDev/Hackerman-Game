@@ -49,6 +49,7 @@
     <Compile Include="IMoveableObj.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IStaticObj.cs" />
+    <Compile Include="Laser.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs">

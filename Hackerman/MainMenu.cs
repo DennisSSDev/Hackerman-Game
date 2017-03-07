@@ -8,7 +8,7 @@ namespace Hackerman
 {
     class MainMenu : IMainMenu
     {
-        enum MenuEnum
+        /*enum MenuEnum
         {
             Main, // Main Menu screen
             Game, // game.exe 
@@ -17,7 +17,7 @@ namespace Hackerman
             LevelEdit,
             Help,
             Exit, 
-        };
+        };*/
 
         public string BackgroundTexture
         {
