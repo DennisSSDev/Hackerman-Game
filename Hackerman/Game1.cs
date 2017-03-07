@@ -34,6 +34,8 @@ namespace Hackerman
         double timer = 0;
         GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
         Vector2 dPos = new Vector2(0, 0);
+        KeyboardState kbState;
+        KeyboardState previousKbState = Keyboard.GetState();
 
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -103,6 +105,36 @@ namespace Hackerman
             else if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 newLaser.Visible = true;
+            }
+        }
+        public void ScreenWrap()
+        {
+            if (_arrow.X == GraphicsDevice.Viewport.Width)//Might not work since checking for screen width
+            {
+                _arrow.X -=10;
+            }
+            else if (_arrow.X == 0)
+            {
+                _arrow.X += 10;
+            }
+
+            if (_arrow.Y == GraphicsDevice.Viewport.Height)
+            {
+                _arrow.Y -= 10;
+            }
+            else if (_arrow.Y == 0)
+            {
+                previousKbState = kbState;//might not be needed check during debug
+                kbState = Keyboard.GetState();
+                if (kbState.IsKeyDown(Keys.A))
+                {
+                    //use a black box
+
+                }
+               
+
+               
+                
             }
         }
 
