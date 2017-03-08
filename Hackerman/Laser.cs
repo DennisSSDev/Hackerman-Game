@@ -30,19 +30,21 @@ namespace Hackerman
         public void Shoot(Player obj)
         {
             
-            if (visible == false)
+            if(state.X == 0 && state.Y == 0)
             {
                 state = Mouse.GetState();
+                distanceX = obj.X - state.X;
+                distanceY = obj.Y - state.Y;
             }
+            
 
             if (visible)
             {
 
-                distanceX = this.X - state.X;
-                distanceY = this.Y - state.Y;
-               
+                
+               //if the player's x and y position is less or greater than your mouse position, determine where the shot should go to
                 this.X += (int)Math.Round(distanceX * 0.01);
-                this.Y += (int)Math.Round(distanceY * 0.01);
+                this.Y -= (int)Math.Round(distanceY * 0.01);
             }
         }
 
