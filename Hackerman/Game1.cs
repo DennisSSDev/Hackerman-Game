@@ -19,20 +19,36 @@ namespace Hackerman
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        Texture2D triangle;
         SpriteBatch spriteBatch;
+
+        //Textures
+        Texture2D triangle;
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
         Texture2D dot;
         Texture2D enemyTex;
         Texture2D laserTex;
+        Texture2D editBtn;
+        Texture2D playBtn;
+        Texture2D exitBtn;
+        Texture2D helpBtn;
+        Texture2D title;
+
+        // Menu Rectangles 
+        Rectangle play = new Rectangle(0, 200, 379, 86);
+        Rectangle edit = new Rectangle(0, 300, 488, 89);
+        Rectangle help = new Rectangle(0, 400, 488, 89);
+        Rectangle exit = new Rectangle(0, 500, 379, 86);
+        Rectangle hack = new Rectangle( 125, 25, 948, 116);
+
+
         Sprite _dot;
         MouseState state;
         Player _arrow;
         Laser newLaser;
         Enemy newEnemy;
         double timer = 0;
-        GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
+        GameState cState = GameState.Menu; // Since we have no menu code, we'll just start in the game 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState = Keyboard.GetState();
@@ -166,6 +182,8 @@ namespace Hackerman
 
             laserTex = Content.Load<Texture2D>("Health");
             
+            
+            
             newEnemy = new Enemy(0, 0, 100, 100, 0, 0, 0f, 5f, Color.White);
 
             
@@ -187,7 +205,13 @@ namespace Hackerman
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            mainmenu = Content.Load<Texture2D>("knowledge");
+
+            mainmenu = Content.Load<Texture2D>("BareMenu");
+            exitBtn = Content.Load<Texture2D>("Exit");
+            playBtn = Content.Load<Texture2D>("PlayButton");
+            editBtn = Content.Load<Texture2D>("LevelButton");
+            helpBtn = Content.Load<Texture2D>("ControlsButton");
+            title = Content.Load<Texture2D>("HackLogo");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
         }
 
@@ -283,7 +307,13 @@ namespace Hackerman
             spriteBatch.Begin();
             if(cState == GameState.Menu)
             {
-                // Draw menu screen
+                _dot.Draw(spriteBatch, gameTime);
+                spriteBatch.Draw(mainmenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(helpBtn, help, Color.White);
+                spriteBatch.Draw(exitBtn, exit, Color.White);
+                spriteBatch.Draw(editBtn, edit, Color.White);
+                spriteBatch.Draw(playBtn, play, Color.White);
+                spriteBatch.Draw(title, hack, Color.White);
             }
 
             if (cState == GameState.Help)
