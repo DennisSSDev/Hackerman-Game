@@ -265,8 +265,7 @@ namespace Hackerman
                 _dot.Y = (int)mousePosition.Y;
 
                 PlayerControls();
-
-                timer += gameTime.ElapsedGameTime.TotalSeconds;
+                
                 newEnemy.FindPlayer(_arrow);
                 newEnemy.AttackPlayer(_arrow);
                 if (newLaser.Visible)
@@ -274,7 +273,7 @@ namespace Hackerman
                     newLaser.Shoot(_arrow);
                 }
 
-                 if(_arrow.Health == 0 || timer == 0) 
+                 if(_arrow.Health == 0) 
                  {
                     cState = GameState.GameOver; 
                  }
