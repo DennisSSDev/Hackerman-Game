@@ -64,7 +64,7 @@ namespace Hackerman
         }
         //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
-        {
+        {//fix the corner problem
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
