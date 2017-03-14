@@ -42,13 +42,14 @@ namespace Hackerman
         Rectangle exit = new Rectangle(0, 500, 379, 86);
         Rectangle hack = new Rectangle( 125, 25, 948, 116);
 
+        MouseState prevState;
         Sprite _dot;
         MouseState state;
         Player _arrow;
         Laser newLaser;
         Enemy newEnemy;
         double timer = 0;
-        GameState cState = GameState.Menu; // Since we have no menu code, we'll just start in the game 
+        GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState = Keyboard.GetState();
@@ -64,8 +65,6 @@ namespace Hackerman
         //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
         {
-            previousKbState = kbState;//might not be needed check during debug
-            kbState = Keyboard.GetState();
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
@@ -120,44 +119,51 @@ namespace Hackerman
                 _arrow.X -= (int)revert.X;
                 _arrow.Y -= (int)revert.Y;
             }
-            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            else if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-                kbState = Keyboard.GetState();
-                
-                newLaser.Visible = true;             
+                newLaser.Visible = true;
             }
-           
         }
-        public void ScreenWrap()
+        public void ScreenWarp()
         {
-            if (_arrow.X == GraphicsDevice.Viewport.Width)//Might not work since checking for screen width
+            if (_arrow.X > GraphicsDevice.Viewport.Width)//Might not work since checking for screen width
             {
-                _arrow.X -=10;
+                _arrow.X = 0;
             }
-            else if (_arrow.X == 0)
+            else if (_arrow.X < 0)
             {
-                _arrow.X += 10;
+                _arrow.X = GraphicsDevice.Viewport.Width;
             }
-
-            if (_arrow.Y == GraphicsDevice.Viewport.Height)
+            else if (_arrow.Y > GraphicsDevice.Viewport.Height)
             {
-                _arrow.Y -= 10;
+                _arrow.Y = 0;
             }
-            else if (_arrow.Y == 0)
+            else if (_arrow.Y < 0)
             {
-                previousKbState = kbState;//might not be needed check during debug
-                kbState = Keyboard.GetState();
-                if (kbState.IsKeyDown(Keys.A))
-                {
-                    //use a black box
-
-                }
-               
-
-               
-                
+                _arrow.Y = GraphicsDevice.Viewport.Height;
             }
         }
+
+        /* Creating clickable areas in each rectangle 
+        public bool Click(Rectangle r)
+        {
+            if (currState.LeftButton == ButtonState.Pressed)
+            {
+                Point mousPos = new Point(currState.X, currState.Y);
+                if (r.Contains(mousPos))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }*/
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -238,21 +244,22 @@ namespace Hackerman
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
+
             // Menu State 
-            if(cState == GameState.Menu)
+            if (cState == GameState.Menu)
             {
-                // Somehow we need to interact with rectangles and the mouse click
-                // if(user clicks help)
-                // { cState = GameState.Help }
-                // else if(user clicks Exit) 
-                // { cState = GameState.Exit }
-                // else if(user clicks play) 
-                // { cState = GameState.Game }
-                kbState = Keyboard.GetState();
-                if (kbState.IsKeyDown(Keys.Enter))
+                /*bool helpPressed = Click(help);
+                bool exitPressed = Click(exit);
+                bool playPressed = Click(play);
+                bool editPressed = Click(edit);*/
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
-                    cState = GameState.Game;
+                    Point mousPos = new Point(state.X, state.Y);
+                    if (play.Contains(mousPos))
+                    {
+                        cState = GameState.Game;
+                    }
+                    prevState = state;
                 }
             }
 
@@ -261,7 +268,7 @@ namespace Hackerman
             {
                 state = Mouse.GetState();
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
-                if(newLaser.Visible == false)
+                if (newLaser.Visible == false)
                 {
                     newLaser.X = _arrow.X;
                     newLaser.Y = _arrow.Y;
@@ -275,7 +282,9 @@ namespace Hackerman
                 _dot.Y = (int)mousePosition.Y;
 
                 PlayerControls();
-                
+
+                ScreenWarp();
+
                 newEnemy.FindPlayer(_arrow);
                 newEnemy.AttackPlayer(_arrow);
                 if (newLaser.Visible)
@@ -283,25 +292,20 @@ namespace Hackerman
                     newLaser.Shoot(_arrow);
                 }
 
-                if (newEnemy.CheckForDeath(newLaser))
+                if (_arrow.Health == 0)
                 {
-                    cState = GameState.Menu;
+                    cState = GameState.GameOver;
                 }
-
-                 if(_arrow.Health == 0) 
-                 {
-                    cState = GameState.GameOver; 
-                 }
             }
 
             // Menu State will have player go back to main menu for now 
-            else if(cState == GameState.GameOver)
+            else if (cState == GameState.GameOver)
             {
                 // Check to see if they just press enter 
                 // or something similar
             }
 
-            else if(cState == GameState.Exit)
+            else if (cState == GameState.Exit)
             {
                 // Exit program 
             }
