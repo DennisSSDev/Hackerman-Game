@@ -11,7 +11,7 @@ namespace Hackerman
 {
     class Laser: Sprite
     {
-        private int damage = 1;
+        private int damage = 0;
         private bool visible = false;
         private MouseState state;
         private int distanceX = 0;
@@ -37,8 +37,8 @@ namespace Hackerman
             }
             if (visible)
             {
-                    this.X -= (int)Math.Round(distanceX * 0.01);
-                    this.Y -= (int)Math.Round(distanceY * 0.01); 
+                    this.X -= (int)Math.Round(distanceX * 0.02);
+                    this.Y -= (int)Math.Round(distanceY * 0.02); 
             }
         }
 

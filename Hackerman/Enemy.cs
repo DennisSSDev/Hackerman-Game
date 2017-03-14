@@ -40,8 +40,8 @@ namespace Hackerman
         {
             if (this.Position.Intersects(obj.Position))
             {
-                obj.X-=25;
-                obj.Health--;
+                obj.X+=25;
+                obj.Health-=strength;
             }
         }
 
@@ -52,11 +52,21 @@ namespace Hackerman
 
         public bool CheckForDeath(Laser obj)
         {
-            if (this.Position.Intersects(obj.Position))
+            if (this.Position.Intersects(obj.Position) && obj.Visible == true)
             {
-                alive = false;
-                obj.Visible = false;
-                return true;
+                health--;
+                obj.Visible = false;//althought the projectile becomes invisible, it will still follow the past projectile state, since we don't reset ater collision
+                obj.Damage = 0;
+                if (health == 0)
+                {
+                    alive = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
             }
             else
             {

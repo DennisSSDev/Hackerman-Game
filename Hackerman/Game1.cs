@@ -119,28 +119,29 @@ namespace Hackerman
                 _arrow.X -= (int)revert.X;
                 _arrow.Y -= (int)revert.Y;
             }
-            else if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 newLaser.Visible = true;
+                newLaser.Damage = 1;
             }
         }
         public void ScreenWarp()
         {
-            if (_arrow.X > GraphicsDevice.Viewport.Width)//Might not work since checking for screen width
+            if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
             {
-                _arrow.X = 0;
+                _arrow.X-=10;
             }
-            else if (_arrow.X < 0)
+            else if (_arrow.X <= 50)
             {
-                _arrow.X = GraphicsDevice.Viewport.Width;
+                _arrow.X +=10;
             }
-            else if (_arrow.Y > GraphicsDevice.Viewport.Height)
+            else if (_arrow.Y > GraphicsDevice.Viewport.Height-50)
             {
-                _arrow.Y = 0;
+                _arrow.Y -= 10;
             }
-            else if (_arrow.Y < 0)
+            else if (_arrow.Y <= 50)
             {
-                _arrow.Y = GraphicsDevice.Viewport.Height;
+                _arrow.Y += 10;
             }
         }
 
@@ -203,7 +204,7 @@ namespace Hackerman
             {
                 Origin = new Vector2(dot.Bounds.Center.X, dot.Bounds.Center.Y)
             };
-            _arrow = new Player(300, 300, 100, 100, 100, 100, 0f, 0.75f, Color.White, 10, 5)
+            _arrow = new Player(300, 300, 100, 100, 100, 100, 0f, 0.75f,Color.White)
             {
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
@@ -295,6 +296,11 @@ namespace Hackerman
                 if (_arrow.Health == 0)
                 {
                     cState = GameState.GameOver;
+                }
+                if (newEnemy.CheckForDeath(newLaser))
+                {
+                    cState = GameState.Menu;
+                    newEnemy.Strength = 0;
                 }
             }
 
