@@ -50,6 +50,20 @@ namespace Hackerman
             throw new NotImplementedException();
         }
 
+        public bool CheckForDeath(Laser obj)
+        {
+            if (this.Position.Intersects(obj.Position))
+            {
+                alive = false;
+                obj.Visible = false;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public int CountOfEnemies()
         {
             throw new NotImplementedException();
@@ -63,8 +77,14 @@ namespace Hackerman
                     int distanceY = obj.Y - this.Y;
                     this.X += (int)Math.Round(distanceX * 0.01);
                     this.Y += (int)Math.Round(distanceY * 0.01);
-                }
-            
+                }  
+        }
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if (alive)
+            {
+                base.Draw(spriteBatch, gameTime);
+            }
         }
     }
 }

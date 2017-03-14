@@ -48,7 +48,7 @@ namespace Hackerman
         Laser newLaser;
         Enemy newEnemy;
         double timer = 0;
-        GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
+        GameState cState = GameState.Menu; // Since we have no menu code, we'll just start in the game 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState = Keyboard.GetState();
@@ -64,6 +64,8 @@ namespace Hackerman
         //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
         {
+            previousKbState = kbState;//might not be needed check during debug
+            kbState = Keyboard.GetState();
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
@@ -118,10 +120,13 @@ namespace Hackerman
                 _arrow.X -= (int)revert.X;
                 _arrow.Y -= (int)revert.Y;
             }
-            else if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-                newLaser.Visible = true;
+                kbState = Keyboard.GetState();
+                
+                newLaser.Visible = true;             
             }
+           
         }
         public void ScreenWrap()
         {
@@ -244,6 +249,11 @@ namespace Hackerman
                 // { cState = GameState.Exit }
                 // else if(user clicks play) 
                 // { cState = GameState.Game }
+                kbState = Keyboard.GetState();
+                if (kbState.IsKeyDown(Keys.Enter))
+                {
+                    cState = GameState.Game;
+                }
             }
 
             // Game State 
@@ -271,6 +281,11 @@ namespace Hackerman
                 if (newLaser.Visible)
                 {
                     newLaser.Shoot(_arrow);
+                }
+
+                if (newEnemy.CheckForDeath(newLaser))
+                {
+                    cState = GameState.Menu;
                 }
 
                  if(_arrow.Health == 0) 
