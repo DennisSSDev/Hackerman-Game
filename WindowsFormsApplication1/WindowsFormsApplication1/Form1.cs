@@ -31,11 +31,19 @@ namespace WindowsFormsApplication1
             InitializeComponent();
         }
 
-        private void externalEditor_Load(object sender, EventArgs e)
-        {
+        private void externalEditor_Load(object sender, EventArgs e)//on load it aoutomatically will assume that you want a new map,
+        {//so I reset the coordinates to outside bounds
             coordinateFile = Directory.GetFiles(@"Coordinate", "coordinate*");
             string nothing = "";
-            File.WriteAllText(coordinateFile[0], nothing);         
+            File.WriteAllText(coordinateFile[0], nothing);
+            using (Stream someStream = File.OpenWrite(coordinateFile[0]))
+            {
+                var writer = new BinaryWriter(someStream);
+                writer.Write(-100);
+                writer.Write(100);
+                
+
+            }
         }
 
         private void nextBtn_Click(object sender, EventArgs e)
@@ -52,23 +60,23 @@ namespace WindowsFormsApplication1
                                     break;
                                 case ButtonPress.TopLeft:
                                     writer.Write(100);
-                                    writer.Write(100);
+                                    writer.Write(50);
                                     break;
                                 case ButtonPress.ButtomLeft:
                                     writer.Write(100);
-                                    writer.Write(500);
+                                    writer.Write(400);
                                     break;
                                 case ButtonPress.Center:
-                                    writer.Write(300);
-                                    writer.Write(300);
+                                    writer.Write(500);
+                                    writer.Write(280);
                                     break;
                                 case ButtonPress.TopRight:
-                                    writer.Write(500);
+                                    writer.Write(900);
                                     writer.Write(100);
                                     break;
                                 case ButtonPress.ButtomRight:
-                                    writer.Write(500);
-                                    writer.Write(500);
+                                    writer.Write(900);
+                                    writer.Write(400);
                                     break;
                                 default:
                                     break;

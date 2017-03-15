@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Hackerman
 {
@@ -20,7 +21,7 @@ namespace Hackerman
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        
         //Textures
         Texture2D triangle;
         Texture2D mainmenu;
@@ -34,6 +35,7 @@ namespace Hackerman
         Texture2D helpBtn;
         Texture2D title;
         Texture2D bareMenu;
+        Texture2D boxForBox;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -44,6 +46,7 @@ namespace Hackerman
 
         MouseState prevState;
         Sprite _dot;
+        Sprite box;
         MouseState state;
         Player _arrow;
         Laser newLaser;
@@ -53,6 +56,9 @@ namespace Hackerman
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState = Keyboard.GetState();
+
+        int coordinateXcomponent;
+        int coordinateYcomponent;
 
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -176,7 +182,7 @@ namespace Hackerman
         {
             //We should initialize the player only, without the dot since if we initialize the dot,
             //it might appear on the menu screen, we don't want that 
-            
+
             base.Initialize();
         }
 
@@ -186,6 +192,19 @@ namespace Hackerman
         /// </summary>
         protected override void LoadContent()
         {
+            
+
+            using (Stream streamer = 
+                File.Open(@"C:\Users\denni\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
+                FileMode.Open))
+            {
+                var reader = new BinaryReader(streamer);
+                coordinateXcomponent = reader.ReadInt32();
+                coordinateYcomponent = reader.ReadInt32();
+            }
+
+            boxForBox = Content.Load<Texture2D>("HackTemp");
+
             triangle = Content.Load<Texture2D>("Triangle");
             
             dot = Content.Load<Texture2D>("Dot1");
@@ -195,8 +214,6 @@ namespace Hackerman
             laserTex = Content.Load<Texture2D>("Health");
 
             mainmenu = Content.Load<Texture2D>("knowledge");
-
-
 
             newEnemy = new Enemy(0, 0, 100, 100, 0, 0, 0f, 5f, Color.White);
 
@@ -209,8 +226,13 @@ namespace Hackerman
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
             newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, _arrow.Rotation, 1f, Color.White);
+
+            box = new Sprite(coordinateXcomponent, coordinateYcomponent, 200, 200, 0,
+                0, 0f, 1f, Color.White);
+
             _arrow.Texture = triangle;
             _dot.Texture = dot;
+            box.Texture = boxForBox;
             newEnemy.Texture = enemyTex;
             newLaser.Texture = laserTex;
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -245,7 +267,6 @@ namespace Hackerman
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             // Menu State 
             if (cState == GameState.Menu)
             {
@@ -277,7 +298,7 @@ namespace Hackerman
                 }
                 dPos.X = _arrow.X - state.X;
                 dPos.Y = _arrow.Y - state.Y;
-
+                
                 _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
                 _dot.X = (int)mousePosition.X;
                 _dot.Y = (int)mousePosition.Y;
@@ -347,9 +368,12 @@ namespace Hackerman
             if (cState == GameState.Game)
             {
                 spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+                box.Draw(spriteBatch, gameTime);
+                
                 _arrow.Draw(spriteBatch, gameTime);
                 newEnemy.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);
+
                 if (newLaser.Visible == true)
                 {
                     newLaser.Draw(spriteBatch, gameTime);
