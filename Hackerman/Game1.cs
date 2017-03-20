@@ -11,6 +11,7 @@ namespace Hackerman
     {
         Game,
         Menu,
+        Edit,
         Help, 
         GameOver,
         Exit
@@ -52,10 +53,10 @@ namespace Hackerman
         Laser newLaser;
         Enemy newEnemy;
         double timer = 0;
-        GameState cState = GameState.Game; // Since we have no menu code, we'll just start in the game 
+        GameState cState = GameState.Menu; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
-        KeyboardState previousKbState = Keyboard.GetState();
+        KeyboardState previousKbState;
 
         int coordinateXcomponent;
         int coordinateYcomponent;
@@ -151,13 +152,12 @@ namespace Hackerman
             }
         }
 
-        /* Creating clickable areas in each rectangle 
-        public bool Click(Rectangle r)
+        // Creating clickable areas in each rectangle 
+        public bool Click(Rectangle r, Vector2 st)
         {
-            if (currState.LeftButton == ButtonState.Pressed)
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-                Point mousPos = new Point(currState.X, currState.Y);
-                if (r.Contains(mousPos))
+                if (r.Contains(st))
                 {
                     return true;
                 }
@@ -170,7 +170,20 @@ namespace Hackerman
             {
                 return false;
             }
-        }*/
+        }
+
+        // Used to get back to menu from Help and Game Over
+        public bool SingleKeyPress(Keys k)
+        {
+            if (kbState.IsKeyDown(k) && previousKbState.IsKeyUp(k))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -195,7 +208,7 @@ namespace Hackerman
             
 
             using (Stream streamer = 
-                File.Open(@"C:\Users\denni\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
+                File.Open(@"C:\Users\Anthony\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
                 FileMode.Open))
             {
                 var reader = new BinaryReader(streamer);
@@ -267,22 +280,45 @@ namespace Hackerman
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            kbState = Keyboard.GetState();
+
             // Menu State 
             if (cState == GameState.Menu)
             {
-                /*bool helpPressed = Click(help);
-                bool exitPressed = Click(exit);
-                bool playPressed = Click(play);
-                bool editPressed = Click(edit);*/
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                // Mouse movement
+                state = Mouse.GetState();
+                Vector2 mousePosition = new Vector2(state.X, state.Y);
+                dPos.X = _arrow.X - state.X;
+                dPos.Y = _arrow.Y - state.Y;
+                _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
+                _dot.X = (int)mousePosition.X;
+                _dot.Y = (int)mousePosition.Y;
+
+                // Checking to see which was pressed 
+                bool playPressed = Click(play, mousePosition);
+                bool helpPressed = Click(help, mousePosition);
+                bool exitPressed = Click(exit, mousePosition);
+                bool editPressed = Click(edit, mousePosition);
+
+                // If statements
+                if (playPressed == true)
                 {
-                    Point mousPos = new Point(state.X, state.Y);
-                    if (play.Contains(mousPos))
-                    {
-                        cState = GameState.Game;
-                    }
-                    prevState = state;
+                    cState = GameState.Game;
                 }
+                else if(helpPressed == true)
+                {
+                    cState = GameState.Help;
+                }
+                else if(exitPressed == true)
+                {
+                    cState = GameState.GameOver;
+                }
+                else if(editPressed == true)
+                {
+                    cState = GameState.Edit;
+                }
+
             }
 
             // Game State 
@@ -328,15 +364,26 @@ namespace Hackerman
             // Menu State will have player go back to main menu for now 
             else if (cState == GameState.GameOver)
             {
-                // Check to see if they just press enter 
-                // or something similar
+                if(SingleKeyPress(Keys.Enter))
+                {
+                    cState = GameState.Menu;
+                }
             }
 
-            else if (cState == GameState.Exit)
+            else if (cState == GameState.Help)
             {
-                // Exit program 
+                if (SingleKeyPress(Keys.Enter))
+                {
+                    cState = GameState.Menu;
+                }
             }
 
+            else if(cState == GameState.Exit)
+            {
+                // Exit program
+            }
+
+            previousKbState = kbState;
             base.Update(gameTime);
         }
 
@@ -358,11 +405,12 @@ namespace Hackerman
                 spriteBatch.Draw(editBtn, edit, Color.White);
                 spriteBatch.Draw(playBtn, play, Color.White);
                 spriteBatch.Draw(title, hack, Color.White);
+                _dot.Draw(spriteBatch, gameTime);
             }
 
             if (cState == GameState.Help)
             {
-                // Draw help screen 
+                GraphicsDevice.Clear(Color.Red);
             }
 
             if (cState == GameState.Game)
@@ -383,7 +431,7 @@ namespace Hackerman
 
             if(cState == GameState.GameOver)
             {
-                // Draw game over screen
+                GraphicsDevice.Clear(Color.Black);
             }
             spriteBatch.End();
             base.Draw(gameTime);
