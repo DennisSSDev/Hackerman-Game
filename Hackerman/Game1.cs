@@ -208,7 +208,7 @@ namespace Hackerman
 
             using (Stream streamer = 
                 File.Open(@"D:\Profiles\akp4657\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
-                FileMode.Open))
+                FileMode.Open))//ask steve
             {
                 var reader = new BinaryReader(streamer);
                 coordinateXcomponent = reader.ReadInt32();
