@@ -39,6 +39,8 @@ namespace Hackerman
             {
                     this.X -= (int)Math.Round(distanceX * 0.02);
                     this.Y -= (int)Math.Round(distanceY * 0.02); 
+                //just look for the state x and y and add a static number until x and y of obj do not reach state.x and state.y, if state.x and state.y are reached,
+                //run in the same direction untuil off screen 
             }
         }
 

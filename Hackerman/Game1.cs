@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 namespace Hackerman
 {
     enum GameState
@@ -53,7 +52,7 @@ namespace Hackerman
         Laser newLaser;
         Enemy newEnemy;
         double timer = 0;
-        GameState cState = GameState.Menu; 
+        GameState cState = GameState.Game; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState;
@@ -126,7 +125,7 @@ namespace Hackerman
                 _arrow.X -= (int)revert.X;
                 _arrow.Y -= (int)revert.Y;
             }
-            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            if(Mouse.GetState().LeftButton == ButtonState.Pressed && cState == GameState.Game)
             {
                 newLaser.Visible = true;
                 newLaser.Damage = 1;
@@ -208,7 +207,7 @@ namespace Hackerman
             
 
             using (Stream streamer = 
-                File.Open(@"C:\Users\Anthony\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
+                File.Open(@"D:\Profiles\akp4657\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
                 FileMode.Open))
             {
                 var reader = new BinaryReader(streamer);
@@ -291,7 +290,7 @@ namespace Hackerman
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
                 dPos.X = _arrow.X - state.X;
                 dPos.Y = _arrow.Y - state.Y;
-                _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
+                //_arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
                 _dot.X = (int)mousePosition.X;
                 _dot.Y = (int)mousePosition.Y;
 
@@ -312,7 +311,7 @@ namespace Hackerman
                 }
                 else if(exitPressed == true)
                 {
-                    cState = GameState.GameOver;
+                    Environment.Exit(0);
                 }
                 else if(editPressed == true)
                 {
@@ -326,7 +325,7 @@ namespace Hackerman
             {
                 state = Mouse.GetState();
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
-                if (newLaser.Visible == false)
+                if (newLaser.Visible == false) 
                 {
                     newLaser.X = _arrow.X;
                     newLaser.Y = _arrow.Y;
@@ -378,9 +377,12 @@ namespace Hackerman
                 }
             }
 
-            else if(cState == GameState.Exit)
+            else if (cState == GameState.Edit)
             {
-                // Exit program
+                if (SingleKeyPress(Keys.Enter))
+                {
+                    cState = GameState.Menu;
+                }
             }
 
             previousKbState = kbState;
