@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 namespace Hackerman
 {
     enum GameState
@@ -36,6 +37,7 @@ namespace Hackerman
         Texture2D title;
         Texture2D bareMenu;
         Texture2D boxForBox;
+        SpriteFont playerScore;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -51,14 +53,16 @@ namespace Hackerman
         Player _arrow;
         Laser newLaser;
         Enemy newEnemy;
-        double timer = 0;
-        GameState cState = GameState.Game; 
+        GameState cState = GameState.Menu; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState;
+        KeyboardState kbStateInMenu;
+        bool fileExists = false;
 
         int coordinateXcomponent;
         int coordinateYcomponent;
+        int score = 0;
 
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -70,7 +74,7 @@ namespace Hackerman
         }
         //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
-        {//fix the corner problem
+        {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
@@ -125,12 +129,10 @@ namespace Hackerman
                 _arrow.X -= (int)revert.X;
                 _arrow.Y -= (int)revert.Y;
             }
-            if(Mouse.GetState().LeftButton == ButtonState.Pressed && cState == GameState.Game)
-            {
-                newLaser.Visible = true;
-                newLaser.Damage = 1;
-            }
         }
+       
+        
+        
         public void ScreenWarp()
         {
             if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
@@ -206,14 +208,20 @@ namespace Hackerman
         {
             
 
-            using (Stream streamer = 
-                File.Open(@"D:\Profiles\akp4657\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat",
-                FileMode.Open))//ask steve
+            fileExists = File.Exists(@"C:\Users\denni\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat");
+ 
+            if (fileExists != false)
             {
-                var reader = new BinaryReader(streamer);
-                coordinateXcomponent = reader.ReadInt32();
-                coordinateYcomponent = reader.ReadInt32();
+                using (Stream streamer =
+                File.OpenRead(@"C:\Users\denni\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat"))//ask steve
+                {
+                    var reader = new BinaryReader(streamer);
+                    coordinateXcomponent = reader.ReadInt32();
+                    coordinateYcomponent = reader.ReadInt32();
+
+                }
             }
+            playerScore = Content.Load<SpriteFont>("Score");
 
             boxForBox = Content.Load<Texture2D>("HackTemp");
 
@@ -238,13 +246,15 @@ namespace Hackerman
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
             newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, _arrow.Rotation, 1f, Color.White);
-
-            box = new Sprite(coordinateXcomponent, coordinateYcomponent, 200, 200, 0,
+            if (fileExists != false)
+            {
+                box = new Sprite(coordinateXcomponent, coordinateYcomponent, 200, 200, 0,
                 0, 0f, 1f, Color.White);
+                box.Texture = boxForBox;
+            }
 
             _arrow.Texture = triangle;
             _dot.Texture = dot;
-            box.Texture = boxForBox;
             newEnemy.Texture = enemyTex;
             newLaser.Texture = laserTex;
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -259,6 +269,21 @@ namespace Hackerman
             bareMenu = Content.Load<Texture2D>("BareMenu");
             title = Content.Load<Texture2D>("HackLogo");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
+            //how to make the program disregard transparent pixels??? ask steve
+        }
+
+        public void HardReset()
+        {
+            Rectangle resetPlayerPos = new Rectangle(300, 400, 100, 100);
+            _arrow.Position = resetPlayerPos;
+            newLaser.Position = _arrow.Position;
+            newLaser.Visible = false;
+            Rectangle resetEnemyPos = new Rectangle(0, 0, 100, 100);
+            newEnemy.Position = resetEnemyPos;
+            newEnemy.Strength = 1;
+            newEnemy.Alive = true;
+            //This will reset most of the important things, but it won't recet the direction of the shot yet, change it so that when you shoot and the shot is out of bounds, reset it's pos
+            //this also doesn't reset the score, which it will, just add it later
         }
 
         /// <summary>
@@ -280,11 +305,12 @@ namespace Hackerman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            kbState = Keyboard.GetState();
+            
 
             // Menu State 
             if (cState == GameState.Menu)
             {
+                HardReset();
                 // Mouse movement
                 state = Mouse.GetState();
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
@@ -323,25 +349,34 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
-                state = Mouse.GetState();
+                MouseState forLeftClick = Mouse.GetState();
+                if (forLeftClick.LeftButton == ButtonState.Pressed && state.LeftButton == ButtonState.Released)
+                {
+                    newLaser.Visible = true;
+                    newLaser.Damage = 1;
+
+                }
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
+
                 if (newLaser.Visible == false) 
                 {
                     newLaser.X = _arrow.X;
                     newLaser.Y = _arrow.Y;
                     newLaser.Rotation = _arrow.Rotation;
                 }
+                state = Mouse.GetState();
                 dPos.X = _arrow.X - state.X;
                 dPos.Y = _arrow.Y - state.Y;
                 
                 _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
                 _dot.X = (int)mousePosition.X;
                 _dot.Y = (int)mousePosition.Y;
-
+                
                 PlayerControls();
+                
 
                 ScreenWarp();
-
+                
                 newEnemy.FindPlayer(_arrow);
                 newEnemy.AttackPlayer(_arrow);
                 if (newLaser.Visible)
@@ -357,6 +392,7 @@ namespace Hackerman
                 {
                     cState = GameState.Menu;
                     newEnemy.Strength = 0;
+                    score++;
                 }
             }
 
@@ -418,8 +454,11 @@ namespace Hackerman
             if (cState == GameState.Game)
             {
                 spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
-                box.Draw(spriteBatch, gameTime);
-                
+                spriteBatch.DrawString(playerScore, "Score: "+ String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
+                if (fileExists == true)
+                {
+                    box.Draw(spriteBatch, gameTime);
+                }
                 _arrow.Draw(spriteBatch, gameTime);
                 newEnemy.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);
@@ -434,6 +473,7 @@ namespace Hackerman
             if(cState == GameState.GameOver)
             {
                 GraphicsDevice.Clear(Color.Black);
+                
             }
             spriteBatch.End();
             base.Draw(gameTime);
