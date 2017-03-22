@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 namespace Hackerman
 {
     enum GameState
@@ -56,14 +57,17 @@ namespace Hackerman
         GameState cState = GameState.Menu; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
-        KeyboardState previousKbState;
+        KeyboardState previousKbState = Keyboard.GetState();
         KeyboardState kbStateInMenu;
         bool fileExists = false;
+        bool launchExternal = true;
+        bool fileLoadAllowance = true;
+        
 
         int coordinateXcomponent;
         int coordinateYcomponent;
         int score = 0;
-
+        
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
         {
@@ -71,6 +75,7 @@ namespace Hackerman
             graphics.PreferredBackBufferHeight = 648;
             graphics.PreferredBackBufferWidth = 1150;
             Content.RootDirectory = "Content";
+            
         }
         //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
@@ -131,7 +136,18 @@ namespace Hackerman
             }
         }
        
-        
+        public void LaunchExt()
+        {
+            
+                if (launchExternal)
+                {
+                    Process.Start(
+                       "WindowsFormsApplication1.exe");
+                    launchExternal = false;
+
+                }
+            
+        }
         
         public void ScreenWarp()
         {
@@ -156,6 +172,7 @@ namespace Hackerman
         // Creating clickable areas in each rectangle 
         public bool Click(Rectangle r, Vector2 st)
         {
+            
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 if (r.Contains(st))
@@ -176,6 +193,7 @@ namespace Hackerman
         // Used to get back to menu from Help and Game Over
         public bool SingleKeyPress(Keys k)
         {
+            kbState = Keyboard.GetState();
             if (kbState.IsKeyDown(k) && previousKbState.IsKeyUp(k))
             {
                 return true;
@@ -208,12 +226,12 @@ namespace Hackerman
         {
             
 
-            fileExists = File.Exists(@"C:\Users\denni\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat");
+            fileExists = File.Exists(@"Coordinate\coordinate.dat");
  
-            if (fileExists != false)
+            if (fileExists)
             {
                 using (Stream streamer =
-                File.OpenRead(@"C:\Users\denni\Source\Repos\Hackerman\Hackerman\Content\WindowsFormsApplication1\WindowsFormsApplication1\bin\Debug\Coordinate\coordinate.dat"))//ask steve
+                File.OpenRead(@"Coordinate\coordinate.dat"))//ask steve
                 {
                     var reader = new BinaryReader(streamer);
                     coordinateXcomponent = reader.ReadInt32();
@@ -235,13 +253,13 @@ namespace Hackerman
 
             mainmenu = Content.Load<Texture2D>("knowledge");
 
-            newEnemy = new Enemy(0, 0, 100, 100, 0, 0, 0f, 5f, Color.White);
+            newEnemy = new Enemy(0, 0, 100, 100, 0,0, 0f, 5f, Color.White);
 
             _dot = new Sprite(300, 400, 50, 50, 300, 400, 0f, 0.3f, Color.White)
             {
                 Origin = new Vector2(dot.Bounds.Center.X, dot.Bounds.Center.Y)
             };
-            _arrow = new Player(300, 300, 100, 100, 100, 100, 0f, 0.75f,Color.White)
+            _arrow = new Player(300, 300, 100, 100, 100,100, 0f, 0.75f,Color.White)
             {
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
@@ -269,7 +287,7 @@ namespace Hackerman
             bareMenu = Content.Load<Texture2D>("BareMenu");
             title = Content.Load<Texture2D>("HackLogo");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
-            //how to make the program disregard transparent pixels??? ask steve
+            //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
 
         public void HardReset()
@@ -304,12 +322,12 @@ namespace Hackerman
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             
-
             // Menu State 
             if (cState == GameState.Menu)
             {
+                fileLoadAllowance = true;
+                launchExternal = true;
                 HardReset();
                 // Mouse movement
                 state = Mouse.GetState();
@@ -349,6 +367,23 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
+                if (fileLoadAllowance)
+                {
+                    if (fileExists)
+                    {
+                        using (Stream streamer =
+                        File.OpenRead(@"Coordinate\coordinate.dat"))//ask steve
+                        {
+                            var reader = new BinaryReader(streamer);
+                            coordinateXcomponent = reader.ReadInt32();
+                            coordinateYcomponent = reader.ReadInt32();
+                            box.X = coordinateXcomponent;
+                            box.Y = coordinateYcomponent;
+                        }
+                    }
+                    fileLoadAllowance = false;
+                }
+                
                 MouseState forLeftClick = Mouse.GetState();
                 if (forLeftClick.LeftButton == ButtonState.Pressed && state.LeftButton == ButtonState.Released)
                 {
@@ -415,6 +450,7 @@ namespace Hackerman
 
             else if (cState == GameState.Edit)
             {
+                LaunchExt();
                 if (SingleKeyPress(Keys.Enter))
                 {
                     cState = GameState.Menu;

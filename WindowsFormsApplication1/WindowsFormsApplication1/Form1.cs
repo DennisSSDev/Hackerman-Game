@@ -41,7 +41,7 @@ namespace WindowsFormsApplication1
                 var writer = new BinaryWriter(someStream);
                 writer.Write(-100);
                 writer.Write(100);
-                
+                writer.Flush();
 
             }
         }
@@ -81,6 +81,7 @@ namespace WindowsFormsApplication1
                                 default:
                                     break;
                             }
+                            writer.Flush();
                         }
                 using (Stream filer = File.OpenRead(coordinateFile[0]))
                 {

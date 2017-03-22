@@ -181,9 +181,6 @@
 /processorParam:TextureFormat=Color
 /build:buggy.png
 
-#begin ../../WindowsFormsApplication1/WindowsFormsApplication1/bin/Debug/Coordinate/coordinate.dat
-/copy:../../WindowsFormsApplication1/WindowsFormsApplication1/bin/Debug/Coordinate/coordinate.dat
-
 #begin Score.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

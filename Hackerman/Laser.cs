@@ -35,10 +35,20 @@ namespace Hackerman
                 distanceX = obj.X - state.X;
                 distanceY = obj.Y - state.Y;
             }
-            if (visible)
+            else if (this.X < 0 || this.Y < 0 || this.X > 1000)
             {
-                    this.X -= (int)Math.Round(distanceX * 0.02);
-                    this.Y -= (int)Math.Round(distanceY * 0.02); 
+                state = Mouse.GetState();
+                this.Visible = false;
+                this.X = obj.X;
+                this.Y = obj.Y;
+            }
+            if (visible && this.X != distanceX && this.Y != distanceY)
+            {
+                distanceX = obj.X - state.X;
+                distanceY = obj.Y - state.Y;
+                //might want to look for specific quadronts
+                this.X -= (int)Math.Round(distanceX / 10.0);
+                this.Y -= (int)Math.Round(distanceY / 10.0);
                 //just look for the state x and y and add a static number until x and y of obj do not reach state.x and state.y, if state.x and state.y are reached,
                 //run in the same direction untuil off screen 
             }
