@@ -15,6 +15,7 @@ namespace Hackerman
         Edit,
         Help, 
         GameOver,
+        Pause,
         Exit
         // Just need a state for the game itself, 
         // not for individual 
@@ -38,6 +39,7 @@ namespace Hackerman
         Texture2D title;
         Texture2D bareMenu;
         Texture2D boxForBox;
+        Texture2D pauseMenu;
         SpriteFont playerScore;
 
         // Menu Rectangles 
@@ -62,6 +64,7 @@ namespace Hackerman
         bool fileExists = false;
         bool launchExternal = true;
         bool fileLoadAllowance = true;
+        //string controls = "Go";
         
 
         int coordinateXcomponent;
@@ -80,60 +83,64 @@ namespace Hackerman
         //Add a wrap method, to keep the playing field within the bounds of the screen 
         public void PlayerControls()//allows the control of the player 
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Vector2 revert = new Vector2(_arrow.Speed, -_arrow.Speed);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-_arrow.Speed, -_arrow.Speed);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-_arrow.Speed, _arrow.Speed);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Vector2 revert = new Vector2(_arrow.Speed, 0);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-10, 0);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Vector2 revert = new Vector2(-1 * _arrow.Speed, 0);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Vector2 revert = new Vector2(0, -1 * _arrow.Speed);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Vector2 revert = new Vector2(0, _arrow.Speed);
-                _arrow.X -= (int)revert.X;
-                _arrow.Y -= (int)revert.Y;
-            }
+           if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
+           {
+               Vector2 revert = new Vector2(_arrow.Speed, _arrow.Speed);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.A) && Keyboard.GetState().IsKeyDown(Keys.S))
+           {
+               Vector2 revert = new Vector2(_arrow.Speed, -_arrow.Speed);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.S) && Keyboard.GetState().IsKeyDown(Keys.D))
+           {
+               Vector2 revert = new Vector2(-_arrow.Speed, -_arrow.Speed);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.D))
+           {
+               Vector2 revert = new Vector2(-_arrow.Speed, _arrow.Speed);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.A))
+           {
+               Vector2 revert = new Vector2(_arrow.Speed, 0);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.D))
+           {
+               Vector2 revert = new Vector2(-10, 0);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.D))
+           {
+               Vector2 revert = new Vector2(-1 * _arrow.Speed, 0);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.S))
+           {
+               Vector2 revert = new Vector2(0, -1 * _arrow.Speed);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+           else if (Keyboard.GetState().IsKeyDown(Keys.W))
+           {
+               Vector2 revert = new Vector2(0, _arrow.Speed);
+               _arrow.X -= (int)revert.X;
+               _arrow.Y -= (int)revert.Y;
+           }
+            
+            // Empty method just stopping all movement
+            //else if(s == "Stop")
+            // {}
         }
        
         public void LaunchExt()
@@ -287,6 +294,7 @@ namespace Hackerman
             bareMenu = Content.Load<Texture2D>("BareMenu");
             title = Content.Load<Texture2D>("HackLogo");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
+            pauseMenu = Content.Load<Texture2D>("rectangle");
             //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
 
@@ -300,6 +308,7 @@ namespace Hackerman
             newEnemy.Position = resetEnemyPos;
             newEnemy.Strength = 1;
             newEnemy.Alive = true;
+            //controls = "Go";
             //This will reset most of the important things, but it won't recet the direction of the shot yet, change it so that when you shoot and the shot is out of bounds, reset it's pos
             //this also doesn't reset the score, which it will, just add it later
         }
@@ -383,7 +392,7 @@ namespace Hackerman
                     }
                     fileLoadAllowance = false;
                 }
-                
+
                 MouseState forLeftClick = Mouse.GetState();
                 if (forLeftClick.LeftButton == ButtonState.Pressed && state.LeftButton == ButtonState.Released)
                 {
@@ -408,7 +417,6 @@ namespace Hackerman
                 _dot.Y = (int)mousePosition.Y;
                 
                 PlayerControls();
-                
 
                 ScreenWarp();
                 
@@ -429,14 +437,36 @@ namespace Hackerman
                     newEnemy.Strength = 0;
                     score++;
                 }
+
+                if(SingleKeyPress(Keys.P))
+                {
+                    cState = GameState.Pause;
+                }
             }
 
             // Menu State will have player go back to main menu for now 
             else if (cState == GameState.GameOver)
             {
+                //controls = "Stop";
                 if(SingleKeyPress(Keys.Enter))
                 {
                     cState = GameState.Menu;
+                }
+            }
+
+            else if(cState == GameState.Pause)
+            {
+                if (SingleKeyPress(Keys.Escape))
+                {
+                    cState = GameState.Exit;
+                }
+                else if(SingleKeyPress(Keys.M))
+                {
+                    cState = GameState.Menu;
+                }
+                else if(SingleKeyPress(Keys.P))
+                {
+                    cState = GameState.Game;
                 }
             }
 
@@ -508,8 +538,35 @@ namespace Hackerman
 
             if(cState == GameState.GameOver)
             {
+                /*spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+                spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
+                if (fileExists == true)
+                {
+                    box.Draw(spriteBatch, gameTime);
+                }
+                _arrow.Draw(spriteBatch, gameTime);
+                newEnemy.Draw(spriteBatch, gameTime);
+                _dot.Draw(spriteBatch, gameTime);*/
                 GraphicsDevice.Clear(Color.Black);
-                
+            }
+
+            if(cState == GameState.Pause)
+            {
+                spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+                spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
+                if (fileExists == true)
+                {
+                    box.Draw(spriteBatch, gameTime);
+                }
+                _arrow.Draw(spriteBatch, gameTime);
+                newEnemy.Draw(spriteBatch, gameTime);
+                _dot.Draw(spriteBatch, gameTime);
+
+                if (newLaser.Visible == true)
+                {
+                    newLaser.Draw(spriteBatch, gameTime);
+                }
+                spriteBatch.Draw(pauseMenu, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, 500, 500), Color.Black * .8f);
             }
             spriteBatch.End();
             base.Draw(gameTime);
