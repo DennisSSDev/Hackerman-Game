@@ -200,3 +200,10 @@
 /processorParam:TextureFormat=Color
 /build:rectangle.jpg
 
+#begin menuFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:menuFont.spritefont
+

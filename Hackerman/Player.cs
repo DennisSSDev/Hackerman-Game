@@ -9,15 +9,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
 {
-    /*enum PlayerEnum
-    {
-        Alive, 
-        Dead,
-        LHealth, // Lose health 
-        GameOver,
-        ScoreUp
-    };*/
-
     class Player : Sprite, IPlayer
     {
         private int health;

@@ -9,13 +9,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
 {
-    /*enum EnemyEnum
-    {
-        Dead, 
-        Attack,
-        Spawn
-    };*/
-
     class Enemy : Sprite, IEnemy
     {
         private int health;

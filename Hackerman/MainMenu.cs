@@ -7,18 +7,7 @@ using System.Threading.Tasks;
 namespace Hackerman
 {
     class MainMenu : IMainMenu
-    {
-        /*enum MenuEnum
-        {
-            Main, // Main Menu screen
-            Game, // game.exe 
-            Death, // Death Screen
-            Pause, 
-            LevelEdit,
-            Help,
-            Exit, 
-        };*/
-
+    { 
         public string BackgroundTexture
         {
             get

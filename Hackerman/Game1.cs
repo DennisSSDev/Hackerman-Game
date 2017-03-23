@@ -41,6 +41,7 @@ namespace Hackerman
         Texture2D boxForBox;
         Texture2D menuRectangle;
         SpriteFont playerScore;
+        SpriteFont menuFont;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -145,15 +146,12 @@ namespace Hackerman
        
         public void LaunchExt()
         {
-            
                 if (launchExternal)
                 {
                     Process.Start(
                        "WindowsFormsApplication1.exe");
                     launchExternal = false;
-
                 }
-            
         }
         
         public void ScreenWarp()
@@ -247,6 +245,8 @@ namespace Hackerman
                 }
             }
             playerScore = Content.Load<SpriteFont>("Score");
+
+            menuFont = Content.Load<SpriteFont>("menuFont");
 
             boxForBox = Content.Load<Texture2D>("HackTemp");
 
@@ -570,8 +570,16 @@ namespace Hackerman
                 
                 // Rectangle for the menu
                 spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
-                spriteBatch.DrawString(playerScore, "PAUSE", new Vector2(200, 200), Color.White);
+                spriteBatch.DrawString(menuFont, "PAUSE", new Vector2(425, 150), Color.White);
+                spriteBatch.DrawString(menuFont, "Continue - P", new Vector2(375, 250), Color.White);
+                spriteBatch.DrawString(menuFont, "Menu - M", new Vector2(425, 350), Color.White);
+                spriteBatch.DrawString(menuFont, "Exit - Esc", new Vector2(425, 450), Color.White);
+            }
 
+            if (cState == GameState.Edit)
+            {
+                spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(title, hack, Color.White);
             }
             spriteBatch.End();
             base.Draw(gameTime);
