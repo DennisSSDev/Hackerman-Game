@@ -39,7 +39,7 @@ namespace Hackerman
         Texture2D title;
         Texture2D bareMenu;
         Texture2D boxForBox;
-        Texture2D pauseMenu;
+        Texture2D menuRectangle;
         SpriteFont playerScore;
 
         // Menu Rectangles 
@@ -294,7 +294,7 @@ namespace Hackerman
             bareMenu = Content.Load<Texture2D>("BareMenu");
             title = Content.Load<Texture2D>("HackLogo");
             interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
-            pauseMenu = Content.Load<Texture2D>("rectangle");
+            menuRectangle = Content.Load<Texture2D>("rectangle");
             //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
 
@@ -547,11 +547,12 @@ namespace Hackerman
                 _arrow.Draw(spriteBatch, gameTime);
                 newEnemy.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);*/
-                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
             }
 
             if(cState == GameState.Pause)
             {
+                // Having the game in the background 
                 spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
                 spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
                 if (fileExists == true)
@@ -566,7 +567,11 @@ namespace Hackerman
                 {
                     newLaser.Draw(spriteBatch, gameTime);
                 }
-                spriteBatch.Draw(pauseMenu, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, 500, 500), Color.Black * .8f);
+                
+                // Rectangle for the menu
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
+                spriteBatch.DrawString(playerScore, "PAUSE", new Vector2(200, 200), Color.White);
+
             }
             spriteBatch.End();
             base.Draw(gameTime);
