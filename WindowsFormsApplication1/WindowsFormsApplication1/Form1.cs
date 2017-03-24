@@ -39,8 +39,8 @@ namespace WindowsFormsApplication1
             using (Stream someStream = File.OpenWrite(coordinateFile[0]))
             {
                 var writer = new BinaryWriter(someStream);
-                writer.Write(-100);
-                writer.Write(100);
+                writer.Write(-1000);
+                writer.Write(-1000);
                 writer.Flush();
 
             }
@@ -57,6 +57,8 @@ namespace WindowsFormsApplication1
                             switch (stateCheck)
                             {
                                 case ButtonPress.None:
+                                    writer.Write(0);
+                                    writer.Write(0);
                                     break;
                                 case ButtonPress.TopLeft:
                                     writer.Write(100);
@@ -79,7 +81,10 @@ namespace WindowsFormsApplication1
                                     writer.Write(400);
                                     break;
                                 default:
-                                    break;
+                                    writer.Write(0);
+                                    writer.Write(0);
+
+                            break;
                             }
                             writer.Flush();
                         }

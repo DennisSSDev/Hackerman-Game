@@ -376,6 +376,23 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
+                if (box.Position.Intersects(newEnemy.Position))
+                {
+                    
+
+
+                    if(newEnemy.Y >= box.Y + box.Position.Height/2)
+                    {
+                        newEnemy.Y =box.Y+box.Position.Height;
+                    }
+                    
+                    else if(newEnemy.X <= box.X + box.Position.Width)
+                    {
+                        newEnemy.X = box.X;
+                    }
+                    
+                   
+                }
                 if (fileLoadAllowance)
                 {
                     if (fileExists)
@@ -386,6 +403,11 @@ namespace Hackerman
                             var reader = new BinaryReader(streamer);
                             coordinateXcomponent = reader.ReadInt32();
                             coordinateYcomponent = reader.ReadInt32();
+                            if(coordinateXcomponent <= 0)
+                            {
+                                coordinateXcomponent = -10000;
+                                coordinateYcomponent = -10000;
+                            }
                             box.X = coordinateXcomponent;
                             box.Y = coordinateYcomponent;
                         }
