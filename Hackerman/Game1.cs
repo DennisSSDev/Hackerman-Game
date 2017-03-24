@@ -270,7 +270,7 @@ namespace Hackerman
             {
                 Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
             };
-            newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, _arrow.Rotation, 1f, Color.White);
+            newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, 0.1f, 1f, Color.White);
             if (fileExists != false)
             {
                 box = new Sprite(coordinateXcomponent, coordinateYcomponent, 200, 200, 0,
@@ -406,7 +406,7 @@ namespace Hackerman
                 {
                     newLaser.X = _arrow.X;
                     newLaser.Y = _arrow.Y;
-                    newLaser.Rotation = _arrow.Rotation;
+                    newLaser.Rotation = _arrow.Rotation+18f;
                 }
                 state = Mouse.GetState();
                 dPos.X = _arrow.X - state.X;
@@ -424,7 +424,7 @@ namespace Hackerman
                 newEnemy.AttackPlayer(_arrow);
                 if (newLaser.Visible)
                 {
-                    newLaser.Shoot(_arrow);
+                    newLaser.Shoot(_arrow,newEnemy);
                 }
 
                 if (_arrow.Health == 0)
@@ -519,6 +519,7 @@ namespace Hackerman
 
             if (cState == GameState.Game)
             {
+                newEnemy.FacePlayer(_arrow);
                 spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
                 spriteBatch.DrawString(playerScore, "Score: "+ String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
                 if (fileExists == true)

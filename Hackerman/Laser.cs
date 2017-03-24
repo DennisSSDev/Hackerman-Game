@@ -14,8 +14,8 @@ namespace Hackerman
         private int damage = 0;
         private bool visible = false;
         private MouseState state;
-        private int distanceX = 0;
-        private int distanceY=0;
+        private float distanceX = 0;
+        private float distanceY=0;
         public int Damage { get { return damage; } set { damage = value; } }
         public bool Visible { get { return visible; } set { visible = value; } }
         private Player playerstats = new Player();
@@ -27,16 +27,23 @@ namespace Hackerman
             this.visible = visible;
         }
 
-        public void Shoot(Player obj)
+        public void Shoot(Player obj, Enemy obj2)
         {
-            if(state.X == 0 && state.Y == 0)
+
+            //EDIT: There is an important error: if you are able to catch the shot while it's being shot it will change the trajectory of the shot
+            //Solutions: 
+            //FIX the method, or... 
+            //make the player to always be slower than the shot so that he could never be able to catch
+            if (state.X == 0 && state.Y == 0)
             {
                 state = Mouse.GetState();
                 distanceX = obj.X - state.X;
                 distanceY = obj.Y - state.Y;
-            }
-            else if (this.X < 0 || this.Y < 0 || this.X > 1000)
+                this.Rotation = (float)(Math.Atan2(distanceY, distanceX));//might be a bad idea
+            }//this is all sorts of wrong, since sometimes the shots don't reach the destination and might start shooting in the same direction
+            else if (this.X < 0 || this.Y < 0 || this.X > 1200 || this.Y > 800 || this.Position.Intersects(obj2.Position))
             {
+                //also add if the laser is visible and collides with the palyer position, make sure then to add a little to the shots starting point as it will always collide
                 state = Mouse.GetState();
                 this.Visible = false;
                 this.X = obj.X;

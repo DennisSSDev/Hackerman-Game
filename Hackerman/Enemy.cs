@@ -14,6 +14,8 @@ namespace Hackerman
         private int health;
         private int speed;
         private int strength;
+        private int xforRotation = 0;
+        private int yforRotation = 0;
         private bool alive = true;
         public int Speed { get { return speed; } set { speed = value; } }
         public bool Alive { get { return alive; } set { alive = value; } }
@@ -71,10 +73,15 @@ namespace Hackerman
         {
             throw new NotImplementedException();
         }
+        public void FacePlayer(Player obj)
+        {
+            this.Rotation = (float)Math.Atan(obj.Rotation);
+        }
 
         public void FindPlayer(Player obj)
         {
-                if (this.X != obj.X && this.Y != obj.Y)
+
+            if (this.X != obj.X && this.Y != obj.Y)
                 {
                     int distanceX = obj.X - this.X;
                     int distanceY = obj.Y - this.Y;
