@@ -447,6 +447,8 @@ namespace Hackerman
             // Menu State will have player go back to main menu for now 
             else if (cState == GameState.GameOver)
             {
+                newEnemy.X = -100;
+                _arrow.Health = 2;
                 //controls = "Stop";
                 if(SingleKeyPress(Keys.Enter))
                 {
