@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,6 +45,7 @@ namespace Hackerman
         SpriteFont playerScore;
         SpriteFont menuFont;
         SpriteFont controlFont;
+        Song threeHundred;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -263,6 +266,9 @@ namespace Hackerman
 
             mainmenu = Content.Load<Texture2D>("knowledge");
 
+            threeHundred = Content.Load<Song>("300MB");
+            MediaPlayer.Play(threeHundred);
+
             newEnemy = new Enemy(0, 0, 100, 100, 0,0, 0f, 5f, Color.White);
 
             _dot = new Sprite(300, 400, 50, 50, 300, 400, 0f, 0.3f, Color.White)
@@ -311,9 +317,6 @@ namespace Hackerman
             newEnemy.Position = resetEnemyPos;
             newEnemy.Strength = 1;
             newEnemy.Alive = true;
-            //controls = "Go";
-            //This will reset most of the important things, but it won't recet the direction of the shot yet, change it so that when you shoot and the shot is out of bounds, reset it's pos
-            //this also doesn't reset the score, which it will, just add it later
         }
 
         /// <summary>
@@ -456,6 +459,7 @@ namespace Hackerman
                 {
                     cState = GameState.GameOver;
                 }
+
                 if (newEnemy.CheckForDeath(newLaser))
                 {
                     cState = GameState.Menu;
@@ -474,7 +478,6 @@ namespace Hackerman
             {
                 newEnemy.X = -100;
                 _arrow.Health = 2;
-                //controls = "Stop";
                 if(SingleKeyPress(Keys.Enter))
                 {
                     cState = GameState.Menu;
@@ -608,9 +611,9 @@ namespace Hackerman
                 // Rectangle for the menu
                 spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "PAUSE", new Vector2(425, 150), Color.White);
-                spriteBatch.DrawString(menuFont, "Continue - P", new Vector2(375, 250), Color.White);
-                spriteBatch.DrawString(menuFont, "Menu - M", new Vector2(425, 350), Color.White);
-                spriteBatch.DrawString(menuFont, "Exit - Esc", new Vector2(425, 450), Color.White);
+                spriteBatch.DrawString(controlFont, "Continue - P", new Vector2(375, 250), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Menu - M", new Vector2(425, 350), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Exit - Esc", new Vector2(425, 450), Color.LimeGreen);
             }
 
             if (cState == GameState.Edit)
