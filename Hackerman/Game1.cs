@@ -42,6 +42,7 @@ namespace Hackerman
         Texture2D menuRectangle;
         SpriteFont playerScore;
         SpriteFont menuFont;
+        SpriteFont controlFont;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -247,6 +248,8 @@ namespace Hackerman
             playerScore = Content.Load<SpriteFont>("Score");
 
             menuFont = Content.Load<SpriteFont>("menuFont");
+
+            controlFont = Content.Load<SpriteFont>("Controls");
 
             boxForBox = Content.Load<Texture2D>("HackTemp");
 
@@ -538,7 +541,16 @@ namespace Hackerman
 
             if (cState == GameState.Help)
             {
-                GraphicsDevice.Clear(Color.Red);
+                spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(title, hack, Color.White);
+
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 950, 450), Color.Black * .8f);
+                spriteBatch.DrawString(menuFont, "CONTROLS", new Vector2(150, 175), Color.White);
+                spriteBatch.DrawString(controlFont, "Move up/down/left/right: W/S/A/D", new Vector2(170, 250), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Fire: Left click", new Vector2(170, 300), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Aim: Move mouse", new Vector2(170, 350), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Pause: P", new Vector2(170, 400), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
 
             if (cState == GameState.Game)
