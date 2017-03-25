@@ -217,7 +217,7 @@ namespace Hackerman
         public bool DoubleKeyPress(Keys k, Keys u)
         {
             kbState = Keyboard.GetState();
-            if ((kbState.IsKeyDown(k) && previousKbState.IsKeyUp(k))&& ((kbState.IsKeyDown(u) && previousKbState.IsKeyUp(u))))
+            if ((kbState.IsKeyDown(k) && kbState.IsKeyDown(u)) && ((previousKbState.IsKeyUp(k) && previousKbState.IsKeyUp(u))))
             {
                 return true;
             }
@@ -258,14 +258,14 @@ namespace Hackerman
             dot = Content.Load<Texture2D>("Dot1");
             enemyTex = Content.Load<Texture2D>("bug");
             laserTex = Content.Load<Texture2D>("Health");
-            //mainmenu = Content.Load<Texture2D>("HackermanLevel");
+            mainmenu = Content.Load<Texture2D>("HackermanLevel");
             menuRectangle = Content.Load<Texture2D>("rectangle");
 
             // Music
             threeHundred = Content.Load<Song>("300MB");
             MediaPlayer.Play(threeHundred);
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = 75;
+            MediaPlayer.Volume = 45f;
             //un-comment when you push
 
             // Interface
@@ -353,6 +353,25 @@ namespace Hackerman
             // Unneeded as we already have the interface for this. Though, if it's easier to code with it on, then uncomment when you 
             // edit
 
+            /* Volume controls 
+            if(SingleKeyPress(Keys.Right))
+            {
+                MediaPlayer.Volume += 10;
+            }
+            else if(SingleKeyPress(Keys.Left))
+            {
+                MediaPlayer.Volume -= 1;
+            }*/
+
+            if (SingleKeyPress(Keys.N))
+            {
+                MediaPlayer.Pause();
+            }
+            else if (SingleKeyPress(Keys.U))
+            {
+                MediaPlayer.Resume();
+            }
+
             // Menu State 
             if (cState == GameState.Menu)
             {
@@ -392,15 +411,6 @@ namespace Hackerman
                 {
                     cState = GameState.Edit;
                 }
-                else if (DoubleKeyPress(Keys.LeftShift, Keys.M))
-                {
-                    MediaPlayer.Pause();
-                }
-                else if (DoubleKeyPress(Keys.LeftShift, Keys.U))
-                {
-                    MediaPlayer.Resume();
-                }
-
             }
 
             // Game State 
@@ -519,14 +529,6 @@ namespace Hackerman
                 else if(SingleKeyPress(Keys.P))
                 {
                     cState = GameState.Game;
-                }
-                else if(DoubleKeyPress(Keys.LeftShift, Keys.M))
-                {
-                    MediaPlayer.Pause();
-                }
-                else if(DoubleKeyPress(Keys.LeftShift, Keys.U))
-                {
-                    MediaPlayer.Resume();
                 }
             }
 
