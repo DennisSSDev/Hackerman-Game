@@ -214,6 +214,19 @@ namespace Hackerman
             }
         }
 
+        public bool DoubleKeyPress(Keys k, Keys u)
+        {
+            kbState = Keyboard.GetState();
+            if ((kbState.IsKeyDown(k) && previousKbState.IsKeyUp(k))&& ((kbState.IsKeyDown(u) && previousKbState.IsKeyUp(u))))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -252,6 +265,7 @@ namespace Hackerman
             threeHundred = Content.Load<Song>("300MB");
             MediaPlayer.Play(threeHundred);
             MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 75;
             //un-comment when you push
 
             // Interface
@@ -378,6 +392,14 @@ namespace Hackerman
                 {
                     cState = GameState.Edit;
                 }
+                else if (DoubleKeyPress(Keys.LeftShift, Keys.M))
+                {
+                    MediaPlayer.Pause();
+                }
+                else if (DoubleKeyPress(Keys.LeftShift, Keys.U))
+                {
+                    MediaPlayer.Resume();
+                }
 
             }
 
@@ -497,6 +519,14 @@ namespace Hackerman
                 else if(SingleKeyPress(Keys.P))
                 {
                     cState = GameState.Game;
+                }
+                else if(DoubleKeyPress(Keys.LeftShift, Keys.M))
+                {
+                    MediaPlayer.Pause();
+                }
+                else if(DoubleKeyPress(Keys.LeftShift, Keys.U))
+                {
+                    MediaPlayer.Resume();
                 }
             }
 
