@@ -460,7 +460,6 @@ namespace Hackerman
 
                 if (newEnemy.CheckForDeath(newLaser))
                 {
-                    cState = GameState.Menu;
                     newEnemy.Strength = 0;
                     score++;
                 }
