@@ -45,6 +45,7 @@ namespace Hackerman
         SpriteFont playerScore;
         SpriteFont menuFont;
         SpriteFont controlFont;
+        SpriteFont gameoTitle;
         Song threeHundred;
 
         // Menu Rectangles 
@@ -233,7 +234,35 @@ namespace Hackerman
         /// </summary>
         protected override void LoadContent()
         {
-            
+            // Fonts
+            playerScore = Content.Load<SpriteFont>("Score");
+            menuFont = Content.Load<SpriteFont>("menuFont");
+            controlFont = Content.Load<SpriteFont>("Controls");
+
+            // Textures
+            boxForBox = Content.Load<Texture2D>("HackTemp");
+            triangle = Content.Load<Texture2D>("Triangle");
+            dot = Content.Load<Texture2D>("Dot1");
+            enemyTex = Content.Load<Texture2D>("bug");
+            laserTex = Content.Load<Texture2D>("Health");
+            mainmenu = Content.Load<Texture2D>("knowledge");
+            menuRectangle = Content.Load<Texture2D>("rectangle");
+
+            // Music
+            threeHundred = Content.Load<Song>("300MB");
+            //MediaPlayer.Play(threeHundred);
+            //MediaPlayer.IsRepeating = true;
+            //un-comment when you push
+
+            // Interface
+            exitBtn = Content.Load<Texture2D>("Exit");
+            playBtn = Content.Load<Texture2D>("PlayButton");
+            editBtn = Content.Load<Texture2D>("LevelButton");
+            helpBtn = Content.Load<Texture2D>("ControlsButton");
+            bareMenu = Content.Load<Texture2D>("BareMenu");
+            title = Content.Load<Texture2D>("HackLogo");
+            interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
+            menuRectangle = Content.Load<Texture2D>("rectangle");
 
             fileExists = File.Exists(@"Coordinate\coordinate.dat");
  
@@ -245,29 +274,8 @@ namespace Hackerman
                     var reader = new BinaryReader(streamer);
                     coordinateXcomponent = reader.ReadInt32();
                     coordinateYcomponent = reader.ReadInt32();
-
                 }
             }
-            playerScore = Content.Load<SpriteFont>("Score");
-
-            menuFont = Content.Load<SpriteFont>("menuFont");
-
-            controlFont = Content.Load<SpriteFont>("Controls");
-
-            boxForBox = Content.Load<Texture2D>("HackTemp");
-
-            triangle = Content.Load<Texture2D>("Triangle");
-            
-            dot = Content.Load<Texture2D>("Dot1");
-
-            enemyTex = Content.Load<Texture2D>("bug");
-
-            laserTex = Content.Load<Texture2D>("Health");
-
-            mainmenu = Content.Load<Texture2D>("knowledge");
-
-            threeHundred = Content.Load<Song>("300MB");
-            MediaPlayer.Play(threeHundred);
 
             newEnemy = new Enemy(0, 0, 100, 100, 0,0, 0f, 5f, Color.White);
 
@@ -294,16 +302,6 @@ namespace Hackerman
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
-
-            exitBtn = Content.Load<Texture2D>("Exit");
-            playBtn = Content.Load<Texture2D>("PlayButton");
-            editBtn = Content.Load<Texture2D>("LevelButton");
-            helpBtn = Content.Load<Texture2D>("ControlsButton");
-            bareMenu = Content.Load<Texture2D>("BareMenu");
-            title = Content.Load<Texture2D>("HackLogo");
-            interfacaOfPlay = Content.Load<Texture2D>("HackMenuScreen");
-            menuRectangle = Content.Load<Texture2D>("rectangle");
             //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
 
@@ -318,6 +316,7 @@ namespace Hackerman
             newEnemy.Strength = 1;
             newEnemy.Alive = true;
         }
+
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -335,15 +334,18 @@ namespace Hackerman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-            
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Exit();
+            // Unneeded as we already have the interface for this. Though, if it's easier to code with it on, then uncomment when you 
+            // edit
+
             // Menu State 
             if (cState == GameState.Menu)
             {
                 fileLoadAllowance = true;
                 launchExternal = true;
                 HardReset();
+
                 // Mouse movement
                 state = Mouse.GetState();
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
@@ -359,7 +361,7 @@ namespace Hackerman
                 bool exitPressed = Click(exit, mousePosition);
                 bool editPressed = Click(edit, mousePosition);
 
-                // If statements
+                // Menu state transitions
                 if (playPressed == true)
                 {
                     cState = GameState.Game;
@@ -370,7 +372,7 @@ namespace Hackerman
                 }
                 else if(exitPressed == true)
                 {
-                    Environment.Exit(0);
+                    cState = GameState.Exit;
                 }
                 else if(editPressed == true)
                 {
@@ -382,11 +384,9 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
+
                 if (box.Position.Intersects(newEnemy.Position))
                 {
-                    
-
-
                     if(newEnemy.Y >= box.Y + box.Position.Height/2)
                     {
                         newEnemy.Y =box.Y+box.Position.Height;
@@ -396,8 +396,6 @@ namespace Hackerman
                     {
                         newEnemy.X = box.X;
                     }
-                    
-                   
                 }
                 if (fileLoadAllowance)
                 {
@@ -476,11 +474,14 @@ namespace Hackerman
             // Menu State will have player go back to main menu for now 
             else if (cState == GameState.GameOver)
             {
+                MediaPlayer.Stop();
                 newEnemy.X = -100;
                 _arrow.Health = 2;
                 if(SingleKeyPress(Keys.Enter))
                 {
                     cState = GameState.Menu;
+                    //MediaPlayer.Play(threeHundred);
+                    //un-comment when you push 
                 }
             }
 
@@ -517,9 +518,16 @@ namespace Hackerman
                 }
             }
 
+            else if(cState == GameState.Exit)
+            {
+                Exit();
+            }
+
             previousKbState = kbState;
             base.Update(gameTime);
         }
+
+            
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -527,7 +535,7 @@ namespace Hackerman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
@@ -547,12 +555,12 @@ namespace Hackerman
                 spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                 spriteBatch.Draw(title, hack, Color.White);
 
-                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 950, 450), Color.Black * .8f);
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 525, 450), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "CONTROLS", new Vector2(150, 175), Color.White);
-                spriteBatch.DrawString(controlFont, "Move up/down/left/right: W/S/A/D", new Vector2(170, 250), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "Fire: Left click", new Vector2(170, 300), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "Aim: Move mouse", new Vector2(170, 350), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "Pause: P", new Vector2(170, 400), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Move up/down/left/right: W/S/A/D", new Vector2(150, 250), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Fire: Left click", new Vector2(150, 300), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Aim: Move mouse", new Vector2(150, 350), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Pause: P", new Vector2(150, 400), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
 
@@ -578,16 +586,13 @@ namespace Hackerman
 
             if(cState == GameState.GameOver)
             {
-                /*spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
-                spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
-                if (fileExists == true)
-                {
-                    box.Draw(spriteBatch, gameTime);
-                }
-                _arrow.Draw(spriteBatch, gameTime);
-                newEnemy.Draw(spriteBatch, gameTime);
-                _dot.Draw(spriteBatch, gameTime);*/
-                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
+                spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(title, hack, Color.White);
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 525, 450), Color.Black * .8f);
+                spriteBatch.DrawString(menuFont, "GAME OVER", new Vector2(150, 175), Color.White);
+                spriteBatch.DrawString(controlFont, String.Format("Score: {0}", score), new Vector2(150, 300), Color.White);
+                spriteBatch.DrawString(controlFont, String.Format("Rounds: {0}", score), new Vector2(150, 350), Color.White);
+                spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
 
             if(cState == GameState.Pause)
@@ -611,7 +616,7 @@ namespace Hackerman
                 // Rectangle for the menu
                 spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "PAUSE", new Vector2(425, 150), Color.White);
-                spriteBatch.DrawString(controlFont, "Continue - P", new Vector2(375, 250), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Continue - P", new Vector2(425, 250), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Menu - M", new Vector2(425, 350), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Exit - Esc", new Vector2(425, 450), Color.LimeGreen);
             }
@@ -620,6 +625,7 @@ namespace Hackerman
             {
                 spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                 spriteBatch.Draw(title, hack, Color.White);
+                spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
             spriteBatch.End();
             base.Draw(gameTime);
