@@ -250,8 +250,8 @@ namespace Hackerman
 
             // Music
             threeHundred = Content.Load<Song>("300MB");
-            //MediaPlayer.Play(threeHundred);
-            //MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(threeHundred);
+            MediaPlayer.IsRepeating = true;
             //un-comment when you push
 
             // Interface
@@ -480,7 +480,7 @@ namespace Hackerman
                 if(SingleKeyPress(Keys.Enter))
                 {
                     cState = GameState.Menu;
-                    //MediaPlayer.Play(threeHundred);
+                    MediaPlayer.Play(threeHundred);
                     //un-comment when you push 
                 }
             }
