@@ -107,26 +107,31 @@ namespace WindowsFormsApplication1
         private void TopLeft_CheckedChanged(object sender, EventArgs e)
         {
             stateCheck = ButtonPress.TopLeft;
+            pictureBox1.Location = new Point(217, 84);
         }
 
         private void BottomLeft_CheckedChanged(object sender, EventArgs e)
         {
             stateCheck = ButtonPress.ButtomLeft;
+            pictureBox1.Location = new Point(217, 300);
         }
 
         private void Center_CheckedChanged(object sender, EventArgs e)
         {
             stateCheck = ButtonPress.Center;
+            pictureBox1.Location = new Point(327, 187);
         }
 
         private void TopRight_CheckedChanged(object sender, EventArgs e)
         {
             stateCheck = ButtonPress.TopRight;
+            pictureBox1.Location = new Point(430, 84);
         }
 
         private void BottomRight_CheckedChanged(object sender, EventArgs e)
         {
             stateCheck = ButtonPress.ButtomRight;
+            pictureBox1.Location = new Point(430, 300);
         }
 
         private void Exit_Clicked(object sender, EventArgs e)

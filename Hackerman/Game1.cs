@@ -245,7 +245,7 @@ namespace Hackerman
             dot = Content.Load<Texture2D>("Dot1");
             enemyTex = Content.Load<Texture2D>("bug");
             laserTex = Content.Load<Texture2D>("Health");
-            mainmenu = Content.Load<Texture2D>("knowledge");
+            //mainmenu = Content.Load<Texture2D>("HackermanLevel");
             menuRectangle = Content.Load<Texture2D>("rectangle");
 
             // Music
