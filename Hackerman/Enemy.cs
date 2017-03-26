@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
-{
+{//Dennis Made this
     class Enemy : Sprite, IEnemy
     {
         private int health;
@@ -16,6 +16,8 @@ namespace Hackerman
         private int strength;
         private int xforRotation = 0;
         private int yforRotation = 0;
+        private int distanceX = 0;
+        private int distanceY = 0;
         private bool alive = true;
         public int Speed { get { return speed; } set { speed = value; } }
         public bool Alive { get { return alive; } set { alive = value; } }
@@ -80,14 +82,34 @@ namespace Hackerman
 
         public void FindPlayer(Player obj)
         {
-
+            
             if (this.X != obj.X && this.Y != obj.Y)
                 {
-                    int distanceX = obj.X - this.X;
-                    int distanceY = obj.Y - this.Y;
-                    this.X += (int)Math.Round(distanceX * 0.01);
-                    this.Y += (int)Math.Round(distanceY * 0.01);
-                }  
+                if (this.X < obj.X)
+                {
+                    distanceX = obj.X - this.X;
+                }
+                if (this.X > obj.X)
+                {
+                    distanceX = this.X - obj.X;
+                }
+                if (this.Y < obj.Y)
+                {
+                    distanceY = obj.Y - this.Y;
+                }
+                if (this.Y > obj.Y)
+                {
+                    distanceY = this.Y - obj.Y;
+                }
+                Vector2 someVector = new Vector2(distanceX, distanceY);
+                someVector.Normalize();
+                
+                    Vector2 someVec = new Vector2(this.X - obj.X, this.Y - obj.Y);
+                    someVec.Normalize();
+                    this.X -= 3*(int)Math.Round(someVec.X);
+                    this.Y -= 3*(int)Math.Round(someVec.Y);
+                
+            }  
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

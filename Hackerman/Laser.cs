@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Hackerman
-{
+{//Dennis Made this
     class Laser: Sprite
     {
         private int damage = 0;

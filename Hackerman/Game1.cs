@@ -9,7 +9,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 namespace Hackerman
-{
+{//Collabarative work present from Alessandro, Anthony, Dennis
     enum GameState
     {
         Game,
@@ -86,8 +86,8 @@ namespace Hackerman
             Content.RootDirectory = "Content";
             
         }
-        //Add a wrap method, to keep the playing field within the bounds of the screen 
-        public void PlayerControls()//allows the control of the player 
+         
+        public void PlayerControls()//allows the control of the player
         {
            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.A))
            {
