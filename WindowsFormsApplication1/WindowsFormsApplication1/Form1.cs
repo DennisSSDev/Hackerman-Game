@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 
 namespace WindowsFormsApplication1
-{
+{//Enums and File.IO interaction made by Dennis
     enum ButtonPress
     {
         None,
@@ -30,7 +30,6 @@ namespace WindowsFormsApplication1
         {
             InitializeComponent();
         }
-
         private void externalEditor_Load(object sender, EventArgs e)//on load it aoutomatically will assume that you want a new map,
         {//so I reset the coordinates to outside bounds
             coordinateFile = Directory.GetFiles(@"Coordinate", "coordinate*");
@@ -42,7 +41,6 @@ namespace WindowsFormsApplication1
                 writer.Write(-1000);
                 writer.Write(-1000);
                 writer.Flush();
-
             }
         }
 
@@ -50,7 +48,6 @@ namespace WindowsFormsApplication1
         {
             try
             {
-                
                         using (Stream streamer2 = File.OpenWrite(coordinateFile[0]))
                         {
                             var writer = new BinaryWriter(streamer2);
