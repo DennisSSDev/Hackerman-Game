@@ -32,7 +32,6 @@ namespace Hackerman
             this.alive = alive;
 
         }
-
         public void AttackPlayer(Player obj)
         {
             if (this.Position.Intersects(obj.Position))
@@ -103,12 +102,10 @@ namespace Hackerman
                 }
                 Vector2 someVector = new Vector2(distanceX, distanceY);
                 someVector.Normalize();
-                
                     Vector2 someVec = new Vector2(this.X - obj.X, this.Y - obj.Y);
                     someVec.Normalize();
                     this.X -= 3*(int)Math.Round(someVec.X);
-                    this.Y -= 3*(int)Math.Round(someVec.Y);
-                
+                    this.Y -= 3*(int)Math.Round(someVec.Y);   
             }  
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
