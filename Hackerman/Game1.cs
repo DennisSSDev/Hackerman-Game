@@ -566,7 +566,7 @@ namespace Hackerman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.HotPink);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
@@ -598,7 +598,7 @@ namespace Hackerman
             if (cState == GameState.Game)
             {
                 newEnemy.FacePlayer(_arrow);
-                spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+                spriteBatch.Draw(mainmenu, new Vector2(0, 0), Color.White);
                 spriteBatch.DrawString(playerScore, "Score: "+ String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
                 if (fileExists == true)
                 {
