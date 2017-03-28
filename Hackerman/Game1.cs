@@ -286,9 +286,19 @@ namespace Hackerman
                 File.OpenRead(@"Coordinate\coordinate.dat"))//ask steve
                 {
                     var reader = new BinaryReader(streamer);
-                    coordinateXcomponent = reader.ReadInt32();
-                    coordinateYcomponent = reader.ReadInt32();
+                    try
+                    {
+                        coordinateXcomponent = reader.ReadInt32();
+                        coordinateYcomponent = reader.ReadInt32();
+                    }
+                    catch (Exception)
+                    {
+                        coordinateXcomponent = -1000;
+                        coordinateYcomponent = -1000;
+                    }
+                    
                 }
+                
             }
 
             newEnemy = new Enemy(0, 0, 100, 100, 0,0, 0f, 5f, Color.White);
@@ -416,17 +426,19 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
-
-                if (box.Position.Intersects(newEnemy.Position))
+                if (fileExists)
                 {
-                    if(newEnemy.Y >= box.Y + box.Position.Height/2)
+                    if (box.Position.Intersects(newEnemy.Position))
                     {
-                        newEnemy.Y =box.Y+box.Position.Height;
-                    }
-                    
-                    else if(newEnemy.X <= box.X + box.Position.Width)
-                    {
-                        newEnemy.X = box.X;
+                        if (newEnemy.Y >= box.Y + box.Position.Height / 2)
+                        {
+                            newEnemy.Y = box.Y + box.Position.Height;
+                        }
+
+                        else if (newEnemy.X <= box.X + box.Position.Width)
+                        {
+                            newEnemy.X = box.X;
+                        }
                     }
                 }
                 if (fileLoadAllowance)
@@ -437,12 +449,15 @@ namespace Hackerman
                         File.OpenRead(@"Coordinate\coordinate.dat"))//ask steve
                         {
                             var reader = new BinaryReader(streamer);
-                            coordinateXcomponent = reader.ReadInt32();
-                            coordinateYcomponent = reader.ReadInt32();
-                            if(coordinateXcomponent <= 0)
+                            try
                             {
-                                coordinateXcomponent = -10000;
-                                coordinateYcomponent = -10000;
+                                coordinateXcomponent = reader.ReadInt32();
+                                coordinateYcomponent = reader.ReadInt32();
+                            }
+                            catch (Exception)
+                            {
+                                coordinateXcomponent = -1000;
+                                coordinateYcomponent = -1000;
                             }
                             box.X = coordinateXcomponent;
                             box.Y = coordinateYcomponent;
