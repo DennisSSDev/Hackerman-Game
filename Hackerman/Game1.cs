@@ -261,7 +261,7 @@ namespace Hackerman
             triangle = Content.Load<Texture2D>("Triangle");
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("bug");
-            laserTex = Content.Load<Texture2D>("Health");
+            laserTex = Content.Load<Texture2D>("Projectile");
             mainmenu = Content.Load<Texture2D>("HackLvl2");
             menuRectangle = Content.Load<Texture2D>("rectangle");
             fHealth = Content.Load<Texture2D>("Full Health");
