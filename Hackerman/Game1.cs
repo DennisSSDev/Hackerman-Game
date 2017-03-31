@@ -42,6 +42,10 @@ namespace Hackerman
         Texture2D bareMenu;
         Texture2D boxForBox;
         Texture2D menuRectangle;
+        Texture2D fHealth;
+        Texture2D twoHealth;
+        Texture2D oneHealth;
+        Texture2D noHealth;
         SpriteFont playerScore;
         SpriteFont menuFont;
         SpriteFont controlFont;
@@ -289,9 +293,13 @@ namespace Hackerman
             triangle = Content.Load<Texture2D>("Triangle");
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("bug");
-            laserTex = Content.Load<Texture2D>("Health");
+            laserTex = Content.Load<Texture2D>("Projectile");
             mainmenu = Content.Load<Texture2D>("HackLvl2");
             menuRectangle = Content.Load<Texture2D>("rectangle");
+            fHealth = Content.Load<Texture2D>("Full Health");
+            twoHealth = Content.Load<Texture2D>("2-3 Health");
+            oneHealth = Content.Load<Texture2D>("1-3 Health");
+            noHealth = Content.Load<Texture2D>("0 Health");
 
             // Music
             threeHundred = Content.Load<Song>("300MB");
@@ -535,6 +543,7 @@ namespace Hackerman
                 ScreenWarp();
                 
                 newEnemy.FindPlayer(_arrow);
+
                 newEnemy.AttackPlayer(_arrow);
                 for(int i = 0; i < incomingEnemies.Count; i++)
                 {
@@ -674,7 +683,26 @@ namespace Hackerman
                 {
                     newLaser.Draw(spriteBatch, gameTime);
                 }
-                // Also need to draw the interface 
+
+                // Health bar
+                spriteBatch.DrawString(controlFont, "Health", new Vector2(70, 15), Color.LimeGreen);
+
+                if (_arrow.Health == 3)
+                {
+                    spriteBatch.Draw(fHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+                else if (_arrow.Health == 2)
+                {
+                    spriteBatch.Draw(twoHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+                else if (_arrow.Health == 1)
+                {
+                    spriteBatch.Draw(oneHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+                else if (_arrow.Health == 0)
+                {
+                    spriteBatch.Draw(noHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
             }
 
             if(cState == GameState.GameOver)

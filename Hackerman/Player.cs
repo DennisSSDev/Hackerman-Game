@@ -33,7 +33,7 @@ namespace Hackerman
         }
 
         public Player(int xR, int yR, int height, int width, int xV, int yV, float pRotation, float pScale, Color pColor,
-            int health = 2, int speed = 10, int pTotalScore  = 0)
+            int health = 3, int speed = 10, int pTotalScore  = 0)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)
         {
             this.health = health;
