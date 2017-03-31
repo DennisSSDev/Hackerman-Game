@@ -339,6 +339,7 @@ namespace Hackerman
             newEnemy.Position = resetEnemyPos;
             newEnemy.Strength = 1;
             newEnemy.Alive = true;
+            _arrow.Health = 3;
         }
 
 
@@ -521,8 +522,6 @@ namespace Hackerman
             else if (cState == GameState.GameOver)
             {
                 MediaPlayer.Stop();
-                newEnemy.X = -100;
-                _arrow.Health = 2;
                 if(SingleKeyPress(Keys.Enter))
                 {
                     cState = GameState.Menu;
@@ -581,7 +580,7 @@ namespace Hackerman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.HotPink);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
