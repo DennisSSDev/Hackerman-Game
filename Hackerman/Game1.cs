@@ -62,6 +62,7 @@ namespace Hackerman
         Player _arrow;
         Laser newLaser;
         Enemy newEnemy;
+        List<Enemy> incomingEnemies = new List<Enemy>();
         GameState cState = GameState.Menu; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
@@ -76,6 +77,7 @@ namespace Hackerman
         int coordinateXcomponent;
         int coordinateYcomponent;
         int score = 0;
+        int round = 1;
         
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -85,6 +87,36 @@ namespace Hackerman
             graphics.PreferredBackBufferWidth = 1150;
             Content.RootDirectory = "Content";
             
+        }
+
+        public void EnemySpawn()
+        {
+            Random xANDySetter = new Random();
+            for (int i = 0; i < round * 2 + 3; i++)
+            {
+                int sideSetter = xANDySetter.Next(0, 4);
+                if(sideSetter == 0)//TOP OF THE BOX
+                {
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), 0, 100, 100, 0, 0, 0f, 5f, Color.White));
+                }
+                else if(sideSetter == 1)//LEFT SIDE OF THE BOX
+                {
+                    incomingEnemies.Add(new Enemy(0, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White));
+                }
+                else if(sideSetter == 2)//BUTTOM OF THE BOX 
+                {
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height, 100, 100, 0, 0, 0f, 5f, Color.White));
+                }
+                else if(sideSetter == 3)//RIGHT SIDE OF THE BOX
+                {
+                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White));
+                }
+                else
+                {
+                    return;
+                }
+                
+            }
         }
          
         public void PlayerControls()//allows the control of the player
@@ -322,6 +354,11 @@ namespace Hackerman
             _arrow.Texture = triangle;
             _dot.Texture = dot;
             newEnemy.Texture = enemyTex;
+            EnemySpawn();
+            for (int i = 0; i < incomingEnemies.Count; i++)
+            {
+                incomingEnemies[i].Texture = enemyTex;
+            }
             newLaser.Texture = laserTex;
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -466,6 +503,9 @@ namespace Hackerman
                     }
                     fileLoadAllowance = false;
                 }
+                
+
+
 
                 MouseState forLeftClick = Mouse.GetState();
                 if (forLeftClick.LeftButton == ButtonState.Pressed && state.LeftButton == ButtonState.Released)
@@ -496,6 +536,11 @@ namespace Hackerman
                 
                 newEnemy.FindPlayer(_arrow);
                 newEnemy.AttackPlayer(_arrow);
+                for(int i = 0; i < incomingEnemies.Count; i++)
+                {
+                    incomingEnemies[i].FindPlayer(_arrow);
+                    incomingEnemies[i].AttackPlayer(_arrow);
+                }
                 if (newLaser.Visible)
                 {
                     newLaser.Shoot(_arrow,newEnemy);
@@ -621,7 +666,10 @@ namespace Hackerman
                 _arrow.Draw(spriteBatch, gameTime);
                 newEnemy.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);
-
+                for(int i = 0; i < incomingEnemies.Count; i++)
+                {
+                    incomingEnemies[i].Draw(spriteBatch, gameTime);
+                }
                 if (newLaser.Visible == true)
                 {
                     newLaser.Draw(spriteBatch, gameTime);
