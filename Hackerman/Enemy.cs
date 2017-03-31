@@ -33,13 +33,15 @@ namespace Hackerman
             this.alive = alive;
 
         }
-        public void AttackPlayer(Player obj)
+        public bool AttackPlayer(Player obj)
         {
             if (this.Position.Intersects(obj.Position))
             {
                 obj.X+=25;
                 obj.Health-=strength;
+                return true;
             }
+            return false;
         }
 
         public void Collision(IPlayer player, IMoveableObj wall)

@@ -82,6 +82,7 @@ namespace Hackerman
         int coordinateYcomponent;
         int score = 0;
         int round = 1;
+        double timer;
         
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -543,9 +544,22 @@ namespace Hackerman
                 ScreenWarp();
                 
                 newEnemy.FindPlayer(_arrow);
+  
+                timer -= gameTime.ElapsedGameTime.Seconds;
 
-                newEnemy.AttackPlayer(_arrow);
-                for(int i = 0; i < incomingEnemies.Count; i++)
+                if (newEnemy.AttackPlayer(_arrow))
+                {
+                    if (timer <= 0)
+                    {
+                        newEnemy.Strength = 1;
+                        timer = 2;
+                    }
+                    else
+                    {
+                        newEnemy.Strength = 0;
+                    }
+                }
+                for (int i = 0; i < incomingEnemies.Count; i++)
                 {
                     incomingEnemies[i].FindPlayer(_arrow);
                     incomingEnemies[i].AttackPlayer(_arrow);
