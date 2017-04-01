@@ -120,7 +120,6 @@ namespace Hackerman
                 {
                     return;
                 }
-                
             }
         }
          
@@ -306,7 +305,7 @@ namespace Hackerman
             threeHundred = Content.Load<Song>("300MB");
             MediaPlayer.Play(threeHundred);
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = 45f;
+            MediaPlayer.Volume = .15f;
             //un-comment when you push
 
             // Interface
@@ -410,16 +409,15 @@ namespace Hackerman
             // Unneeded as we already have the interface for this. Though, if it's easier to code with it on, then uncomment when you 
             // edit
 
-            /* Volume controls 
+            // Volume controls 
             if(SingleKeyPress(Keys.Right))
             {
-                MediaPlayer.Volume += 10;
+                MediaPlayer.Volume += .10f;
             }
             else if(SingleKeyPress(Keys.Left))
             {
-                MediaPlayer.Volume -= 1;
-            }*/
-
+                MediaPlayer.Volume -= .10f;
+            }
             if (SingleKeyPress(Keys.N))
             {
                 MediaPlayer.Pause();
@@ -668,12 +666,14 @@ namespace Hackerman
                 spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
                 spriteBatch.Draw(title, hack, Color.White);
 
-                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 525, 450), Color.Black * .8f);
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 600, 450), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "CONTROLS", new Vector2(150, 175), Color.White);
                 spriteBatch.DrawString(controlFont, "Move up/down/left/right: W/S/A/D", new Vector2(150, 250), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Fire: Left click", new Vector2(150, 300), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Aim: Move mouse", new Vector2(150, 350), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "Pause: P", new Vector2(150, 400), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Pause: 'P'", new Vector2(150, 400), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Turn up volume: -> Turn down volume: <-", new Vector2(150, 450), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Mute: 'N' Unmute: 'U'", new Vector2(150, 500), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
 
