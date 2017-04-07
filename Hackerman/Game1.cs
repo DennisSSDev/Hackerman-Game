@@ -553,24 +553,24 @@ namespace Hackerman
                 
                 newEnemy.FindPlayer(_arrow);
   
-                timer -= gameTime.ElapsedGameTime.Seconds;
+                timer = 0;
 
-                if (newEnemy.AttackPlayer(_arrow))
-                {
-                    if (timer <= 0)
-                    {
-                        newEnemy.Strength = 1;
-                        timer = 2;
-                    }
-                    else
-                    {
-                        newEnemy.Strength = 0;
-                    }
-                }
                 for (int i = 0; i < incomingEnemies.Count; i++)
                 {
                     incomingEnemies[i].FindPlayer(_arrow);
-                    incomingEnemies[i].AttackPlayer(_arrow);
+                    if(incomingEnemies[i].AttackPlayer(_arrow))
+                    {
+                        if (timer <= 0)
+                        {
+                            incomingEnemies[i].Strength = 1;
+                            timer = 120;
+                        }
+                        else
+                        {
+                            timer--;
+                            incomingEnemies[i].Strength = 0;
+                        }
+                    }
                 }
                 if (newLaser.Visible)
                 {
