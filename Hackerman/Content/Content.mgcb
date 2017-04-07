@@ -301,3 +301,15 @@
 /processorParam:TextureFormat=Color
 /build:Projectile.png
 
+#begin mSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:mSound.wav
+
+#begin gameOver.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gameOver.mp3
+

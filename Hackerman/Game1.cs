@@ -50,7 +50,11 @@ namespace Hackerman
         SpriteFont menuFont;
         SpriteFont controlFont;
         SpriteFont gameoTitle;
+
+        // Sound
         Song threeHundred;
+        SoundEffect mSound;
+        Song gameOver;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -301,11 +305,13 @@ namespace Hackerman
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
 
-            // Music
+            // Music and sound
+            mSound = Content.Load<SoundEffect>("mSound");
             threeHundred = Content.Load<Song>("300MB");
             MediaPlayer.Play(threeHundred);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = .15f;
+
             //un-comment when you push
 
             // Interface
@@ -453,10 +459,13 @@ namespace Hackerman
                 if (playPressed == true)
                 {
                     cState = GameState.Game;
+                    mSound.Play();
                 }
                 else if(helpPressed == true)
                 {
                     cState = GameState.Help;
+                    mSound.Play();
+
                 }
                 else if(exitPressed == true)
                 {
@@ -465,6 +474,7 @@ namespace Hackerman
                 else if(editPressed == true)
                 {
                     cState = GameState.Edit;
+                    mSound.Play();
                 }
             }
 
