@@ -8,7 +8,6 @@ namespace Hackerman
 {
     interface IEnemy
     {
-        void Collision(IPlayer player, IMoveableObj wall);
         int Strength { get; set; }
         int Speed { get; set; }
         bool AttackPlayer(Player obj);

@@ -481,21 +481,6 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
-                if (fileExists)
-                {
-                    if (box.Position.Intersects(newEnemy.Position))
-                    {
-                        if (newEnemy.Y >= box.Y + box.Position.Height / 2)
-                        {
-                            newEnemy.Y = box.Y + box.Position.Height;
-                        }
-
-                        else if (newEnemy.X <= box.X + box.Position.Width)
-                        {
-                            newEnemy.X = box.X;
-                        }
-                    }
-                }
                 if (fileLoadAllowance)
                 {
                     if (fileExists)
@@ -553,24 +538,27 @@ namespace Hackerman
                 
                 newEnemy.FindPlayer(_arrow);
   
-                timer = 0;
-
+                timer = 0;//make a separate thread for this 
+                //make a thread for enemy spawning for each round to give the player some breathing space 
                 for (int i = 0; i < incomingEnemies.Count; i++)
                 {
-                    incomingEnemies[i].FindPlayer(_arrow);
-                    if(incomingEnemies[i].AttackPlayer(_arrow))
+                    incomingEnemies[i].Strength = 0;//reset the enemy strength once done with debug
+                    if (fileExists)
                     {
-                        if (timer <= 0)
+                        if (incomingEnemies[i].Position.Intersects(box.Position))//requires to get a temp position as they will just stop moving with the actual move
                         {
-                            incomingEnemies[i].Strength = 1;
-                            timer = 120;
+                            continue;
                         }
                         else
                         {
-                            timer--;
-                            incomingEnemies[i].Strength = 0;
+                            incomingEnemies[i].FindPlayer(_arrow);
                         }
                     }
+                    else
+                    {
+                        incomingEnemies[i].FindPlayer(_arrow);
+                    }
+                    incomingEnemies[i].AttackPlayer(_arrow);
                 }
                 if (newLaser.Visible)
                 {

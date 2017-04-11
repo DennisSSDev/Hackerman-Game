@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Hackerman
 {//Dennis Made this
-    class Enemy : Sprite, IEnemy
+    class Enemy : Sprite, IEnemy//the list of enemies has to be here 
     {
         private int health;
         private int speed;
@@ -23,6 +23,9 @@ namespace Hackerman
         public int Speed { get { return speed; } set { speed = value; } }
         public bool Alive { get { return alive; } set { alive = value; } }
         public int Strength { get { return strength; } set { strength = value; } }
+        public int RectangleHeight { get; set; }
+        public int RectangleWidth { get; set; }
+        public List<Enemy> listOfEnemies = new List<Enemy>();//rework the class with lists
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
             float pScale, Color pColor, int speed = 3, int strength = 1, int health = 6, bool alive = true)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   
@@ -31,7 +34,13 @@ namespace Hackerman
             this.health = health;
             this.strength = strength;
             this.alive = alive;
-
+            RectangleHeight = height;
+            RectangleWidth = width;
+            
+        }
+        public Enemy()
+        {
+            //blank enemy, used to launch the list
         }
         public bool AttackPlayer(Player obj)
         {
@@ -42,11 +51,6 @@ namespace Hackerman
                 return true;
             }
             return false;
-        }
-
-        public void Collision(IPlayer player, IMoveableObj wall)
-        {
-            throw new NotImplementedException();
         }
 
         public bool CheckForDeath(Laser obj)
@@ -118,5 +122,7 @@ namespace Hackerman
                 base.Draw(spriteBatch, gameTime);
             }
         }
+
+      
     }
 }
