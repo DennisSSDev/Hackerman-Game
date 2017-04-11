@@ -46,6 +46,7 @@ namespace Hackerman
         Texture2D twoHealth;
         Texture2D oneHealth;
         Texture2D noHealth;
+        Texture2D hackSprite;
         SpriteFont playerScore;
         SpriteFont menuFont;
         SpriteFont controlFont;
@@ -294,7 +295,7 @@ namespace Hackerman
 
             // Textures
             boxForBox = Content.Load<Texture2D>("HackTemp");
-            triangle = Content.Load<Texture2D>("Triangle");
+            //triangle = Content.Load<Texture2D>("Triangle");
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("bug");
             laserTex = Content.Load<Texture2D>("Projectile");
@@ -304,6 +305,7 @@ namespace Hackerman
             twoHealth = Content.Load<Texture2D>("2-3 Health");
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
+            hackSprite = Content.Load<Texture2D>("HackSprite");
 
             // Music and sound
             mSound = Content.Load<SoundEffect>("mSound");
@@ -355,7 +357,7 @@ namespace Hackerman
             };
             _arrow = new Player(300, 300, 100, 100, 100,100, 0f, 0.75f,Color.White)
             {
-                Origin = new Vector2(triangle.Bounds.Center.X, triangle.Bounds.Center.Y)
+                Origin = new Vector2(hackSprite.Bounds.Center.X, hackSprite.Bounds.Center.Y)
             };
             newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, 0.1f, 1f, Color.White);
             if (fileExists != false)
@@ -365,7 +367,7 @@ namespace Hackerman
                 box.Texture = boxForBox;
             }
 
-            _arrow.Texture = triangle;
+            _arrow.Texture = hackSprite;
             _dot.Texture = dot;
             newEnemy.Texture = enemyTex;
             EnemySpawn();
@@ -562,7 +564,7 @@ namespace Hackerman
                     {
                         if (timer <= 0)
                         {
-                            incomingEnemies[i].Strength = 1;
+                            incomingEnemies[i].Strength = 0;
                             timer = 120;
                         }
                         else
