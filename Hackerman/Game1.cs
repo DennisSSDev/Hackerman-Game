@@ -527,7 +527,7 @@ namespace Hackerman
                 dPos.X = _arrow.X - state.X;
                 dPos.Y = _arrow.Y - state.Y;
                 
-                _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X);
+                _arrow.Rotation = (float)Math.Atan2(dPos.Y, dPos.X) - 1.75f;
                 _dot.X = (int)mousePosition.X;
                 _dot.Y = (int)mousePosition.Y;
                 
