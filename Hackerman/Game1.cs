@@ -28,7 +28,6 @@ namespace Hackerman
         SpriteBatch spriteBatch;
         
         //Textures
-        Texture2D triangle;
         Texture2D mainmenu;
         Texture2D interfacaOfPlay;
         Texture2D dot;
@@ -64,7 +63,7 @@ namespace Hackerman
         Rectangle exit = new Rectangle(0, 500, 379, 86);
         Rectangle hack = new Rectangle( 125, 25, 948, 116);
 
-        MouseState prevState;
+
         Sprite _dot;
         Sprite box;
         MouseState state;
@@ -76,7 +75,6 @@ namespace Hackerman
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
         KeyboardState previousKbState = Keyboard.GetState();
-        KeyboardState kbStateInMenu;
         bool fileExists = false;
         bool launchExternal = true;
         bool fileLoadAllowance = true;
@@ -87,7 +85,6 @@ namespace Hackerman
         int coordinateYcomponent;
         int score = 0;
         int round = 1;
-        double timer;
         
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -540,7 +537,7 @@ namespace Hackerman
                 
                 newEnemy.FindPlayer(_arrow);
   
-                timer = 0;//make a separate thread for this 
+               //make a separate thread for a timer or use the built in timer so that the player could actually move around before being attacked
                 //make a thread for enemy spawning for each round to give the player some breathing space 
                 for (int i = 0; i < incomingEnemies.Count; i++)
                 {

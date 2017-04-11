@@ -83,7 +83,10 @@ namespace Hackerman
         }
         public void FacePlayer(Player obj)
         {
-            this.Rotation = (float)Math.Atan(obj.Rotation);
+            int dPosX = this.X - obj.X;
+            int dPosY = this.Y - obj.Y;
+            //find the top left corner of the rectangle to set an initial rotation of the enemy towards the player( might want to do this in the constructor) 
+            this.Rotation = (float)Math.Atan2(dPosY, dPosX);
         }
 
         public void FindPlayer(Player obj)
