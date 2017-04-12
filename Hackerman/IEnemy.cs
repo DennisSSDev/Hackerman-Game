@@ -11,7 +11,7 @@ namespace Hackerman
         int Strength { get; set; }
         int Speed { get; set; }
         bool AttackPlayer(Player obj);
-        void FindPlayer(Player obj);
-        int CountOfEnemies();//this method will help the round method determine if all the enmies are dead
+        void FindPlayer(Player obj, Enemy obj2);
+        int CountOfEnemiesOverFlow();//this method will help the round method determine if all the enmies are dead
     }
 }

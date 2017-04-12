@@ -25,6 +25,7 @@ namespace Hackerman
         public int Strength { get { return strength; } set { strength = value; } }
         public int RectangleHeight { get; set; }
         public int RectangleWidth { get; set; }
+        public int EnemyCount { get; set; }
         public List<Enemy> listOfEnemies = new List<Enemy>();//rework the class with lists
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
             float pScale, Color pColor, int speed = 3, int strength = 1, int health = 6, bool alive = true)
@@ -63,6 +64,7 @@ namespace Hackerman
                 if (health == 0)
                 {
                     alive = false;
+                    EnemyCount--;
                     return true;
                 }
                 else
@@ -77,9 +79,21 @@ namespace Hackerman
             }
         }
 
-        public int CountOfEnemies()
+        public int CountOfEnemiesOverFlow()
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (EnemyCount > 100)
+                {
+                    throw new Exception("Enemy count is way too big, commiting stop");
+                }
+                return EnemyCount;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         public void FacePlayer(Player obj)
         {
@@ -88,8 +102,14 @@ namespace Hackerman
             //find the top left corner of the rectangle to set an initial rotation of the enemy towards the player( might want to do this in the constructor) 
             this.Rotation = (float)Math.Atan2(dPosY, dPosX);
         }
-
-        public void FindPlayer(Player obj)
+        public void ColissionSpawn(Enemy obj)//this method should only be used for spawning 
+        {
+            if (this.Position.Intersects(obj.Position))
+            {
+                obj.X += 20;
+            }
+        }
+        public void FindPlayer(Player obj, Enemy obj2)
         {
             
             if (this.X != obj.X && this.Y != obj.Y)
@@ -112,7 +132,9 @@ namespace Hackerman
                 }
                 Vector2 someVector = new Vector2(distanceX, distanceY);
                 someVector.Normalize();
+
                     Vector2 someVec = new Vector2(this.X - obj.X, this.Y - obj.Y);
+                //create a temporary rectangle that will try to predict the position of the enemy and if it collides with anyone
                     someVec.Normalize();
                     this.X -= 3*(int)Math.Round(someVec.X);
                     this.Y -= 3*(int)Math.Round(someVec.Y);   
