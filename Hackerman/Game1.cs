@@ -608,8 +608,7 @@ namespace Hackerman
                     cState = GameState.Pause;
                 }
             }
-
-            // Menu State will have player go back to main menu for now 
+            
             else if (cState == GameState.GameOver)
             {
                 MediaPlayer.Stop();
@@ -617,7 +616,6 @@ namespace Hackerman
                 {
                     cState = GameState.Menu;
                     MediaPlayer.Play(threeHundred);
-                    //un-comment when you push 
                 }
             }
 
