@@ -11,7 +11,7 @@ namespace Hackerman
 {//Dennis Made this
     class Laser: Sprite
     {
-        private int damage = 0;
+        private int damage = 1;
         private bool visible = false;
         private MouseState state;
         private float distanceX = 0;
@@ -41,21 +41,21 @@ namespace Hackerman
                 distanceY = obj.Y - state.Y;
                 this.Rotation = (float)(Math.Atan2(distanceY, distanceX));//might be a bad idea
             }//this is all sorts of wrong, since sometimes the shots don't reach the destination and might start shooting in the same direction
-            else if (this.X < 0 || this.Y < 0 || this.X > 1200 || this.Y > 800 || this.Position.Intersects(obj2.Position))
+            else if (this.X < 0 || this.Y < 0 || this.X > 1200 || this.Y > 800)
             {
                 //also add if the laser is visible and collides with the palyer position, make sure then to add a little to the shots starting point as it will always collide
                 state = Mouse.GetState();
                 this.Visible = false;
-                this.X = obj.X;
-                this.Y = obj.Y;
             }
-            if (visible && this.X != distanceX && this.Y != distanceY)
+            if (visible && this.X != distanceX && this.Y != distanceY)//change from distanceX and distanceY to the bounds of the screen 
             {
                 distanceX = obj.X - state.X;
                 distanceY = obj.Y - state.Y;
+                Vector2 newVec = new Vector2((float)distanceX, (float)distanceY);
+                newVec.Normalize();
                 //might want to look for specific quadronts
-                this.X -= (int)Math.Round(distanceX / 10.0);
-                this.Y -= (int)Math.Round(distanceY / 10.0);
+                this.X -= 3*(int)newVec.X;
+                this.Y -= 3*(int)newVec.Y;
                 //just look for the state x and y and add a static number until x and y of obj do not reach state.x and state.y, if state.x and state.y are reached,
                 //run in the same direction untuil off screen 
             }

@@ -15,20 +15,15 @@ namespace Hackerman
         private int health;
         private int speed;
         private int strength;
-        private int xforRotation = 0;
-        private int yforRotation = 0;
-        private int distanceX = 0;
-        private int distanceY = 0;
         private bool alive = true;
         public int Speed { get { return speed; } set { speed = value; } }
         public bool Alive { get { return alive; } set { alive = value; } }
         public int Strength { get { return strength; } set { strength = value; } }
         public int RectangleHeight { get; set; }
         public int RectangleWidth { get; set; }
-        public int EnemyCount { get; set; }
-        public List<Enemy> listOfEnemies = new List<Enemy>();//rework the class with lists
+        public int EnemyCount { get; set; }//rework the class with lists
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
-            float pScale, Color pColor, int speed = 3, int strength = 1, int health = 6, bool alive = true)
+            float pScale, Color pColor, int speed = 3, int strength = 1, int health = 1, bool alive = true)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   
         {
             this.speed = speed;
@@ -60,7 +55,7 @@ namespace Hackerman
             {
                 health--;
                 obj.Visible = false;//althought the projectile becomes invisible, it will still follow the past projectile state, since we don't reset ater collision
-                obj.Damage = 0;
+
                 if (health == 0)
                 {
                     alive = false;
@@ -114,30 +109,24 @@ namespace Hackerman
             
             if (this.X != obj.X && this.Y != obj.Y)
                 {
-                if (this.X < obj.X)
-                {
-                    distanceX = obj.X - this.X;
-                }
-                if (this.X > obj.X)
-                {
-                    distanceX = this.X - obj.X;
-                }
-                if (this.Y < obj.Y)
-                {
-                    distanceY = obj.Y - this.Y;
-                }
-                if (this.Y > obj.Y)
-                {
-                    distanceY = this.Y - obj.Y;
-                }
-                Vector2 someVector = new Vector2(distanceX, distanceY);
-                someVector.Normalize();
-
-                    Vector2 someVec = new Vector2(this.X - obj.X, this.Y - obj.Y);
+                Vector2 someVec = new Vector2(this.X - obj.X, this.Y - obj.Y);
                 //create a temporary rectangle that will try to predict the position of the enemy and if it collides with anyone
-                    someVec.Normalize();
-                    this.X -= 3*(int)Math.Round(someVec.X);
-                    this.Y -= 3*(int)Math.Round(someVec.Y);   
+                someVec.Normalize();
+                Rectangle temp = new Rectangle(this.X, this.Y, this.RectangleWidth, this.RectangleHeight);
+                temp.X -= (int)Math.Round(someVec.X);
+                temp.Y -= (int)Math.Round(someVec.Y);
+               // if (temp.Intersects(obj2.Position))
+               // {
+                  //  this.X -= 0;
+                   // this.Y -= 0;
+                   // temp.X = this.X;
+                   // temp.Y = this.Y;
+                //}
+                //else
+                //{
+                    this.X = temp.X;
+                    this.Y = temp.Y;
+               // }   
             }  
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
