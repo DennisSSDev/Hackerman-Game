@@ -48,15 +48,16 @@ namespace Hackerman
         Texture2D oneHealth;
         Texture2D noHealth;
         Texture2D hackSprite;
+        Texture2D hackSpritesheet;
+
+        // Font textures;
         SpriteFont playerScore;
         SpriteFont menuFont;
         SpriteFont controlFont;
-        SpriteFont gameoTitle;
 
         // Sound
         Song threeHundred;
         SoundEffect mSound;
-        Song gameOver;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -64,6 +65,19 @@ namespace Hackerman
         Rectangle help = new Rectangle(0, 400, 488, 89);
         Rectangle exit = new Rectangle(0, 500, 379, 86);
         Rectangle hack = new Rectangle( 125, 25, 948, 116);
+
+        // Animation 
+        int frame;
+        double timeCounter;
+        double fps;
+        double timePerFrame;
+
+        // Constants for Hackerman Spritesheet 
+        const int WALK_FRAME_COUNT = 4;
+        const int H_RECT_Y_OFFSET = 100;
+        const int H_RECT_HEIGHT = 31;
+        const int H_RECT_WIDTH = 31;
+
 
         Sprite _dot;
         Sprite box;
@@ -200,10 +214,6 @@ namespace Hackerman
                _arrow.X -= (int)revert.X;
                _arrow.Y -= (int)revert.Y;
            }
-            
-            // Empty method just stopping all movement
-            //else if(s == "Stop")
-            // {}
         }
        
         public void LaunchExt()
@@ -299,6 +309,10 @@ namespace Hackerman
             //We should initialize the player only, without the dot since if we initialize the dot,
             //it might appear on the menu screen, we don't want that 
 
+            // Initialize the animation 
+            fps = 10.0;
+            timePerFrame = 1.0 / fps;
+
             base.Initialize();
         }
 
@@ -319,7 +333,6 @@ namespace Hackerman
 
             // Textures
             boxForBox = Content.Load<Texture2D>("HackTemp");
-            //triangle = Content.Load<Texture2D>("Triangle");
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("bug");
             laserTex = Content.Load<Texture2D>("Projectile");
@@ -330,6 +343,7 @@ namespace Hackerman
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
             hackSprite = Content.Load<Texture2D>("HackSprite");
+            //hackSpritesheet = Content.Load<Texture2D>("HackSpriteSheet");
 
             // Music and sound
             mSound = Content.Load<SoundEffect>("mSound");
@@ -459,6 +473,19 @@ namespace Hackerman
             else if (SingleKeyPress(Keys.U))
             {
                 MediaPlayer.Resume();
+            }
+
+            // Handle animation timing
+            timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+            if(timeCounter >= timePerFrame)
+            {
+                frame += 1; 
+                if(frame > WALK_FRAME_COUNT)
+                {
+                    frame = 1;
+                }
+
+                timeCounter -= timePerFrame;
             }
 
             // Menu State 
@@ -661,6 +688,9 @@ namespace Hackerman
                 {
                     cState = GameState.Pause;
                 }
+
+                // Drawing Hackerman walking and standing.
+
             }
             
             else if (cState == GameState.GameOver)
@@ -715,7 +745,24 @@ namespace Hackerman
             base.Update(gameTime);
         }
 
-            
+        /* Drawing Hackerman either standing or drawing
+        public void DrawHackStanding(SpriteEffects flipSprite)
+        {
+            spriteBatch.Draw(
+                hackSpritesheet,
+                _arrow.Origin,
+                new Rectangle(
+                    0,
+                    H_RECT_Y_OFFSET,
+                    H_RECT_WIDTH,
+                    H_RECT_HEIGHT),
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1.0f,
+                flipSprite,
+                0);
+        }*/
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -723,7 +770,7 @@ namespace Hackerman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
@@ -823,6 +870,7 @@ namespace Hackerman
                 }
                 _arrow.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);
+                //DrawHackStanding(SpriteEffects.None);
 
                 if (newLaser.Visible == true)
                 {
