@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.Timers;
+
 namespace Hackerman
 {//Collabarative work present from Alessandro, Anthony, Dennis
     enum GameState
@@ -63,13 +65,13 @@ namespace Hackerman
         Rectangle exit = new Rectangle(0, 500, 379, 86);
         Rectangle hack = new Rectangle( 125, 25, 948, 116);
 
-
         Sprite _dot;
         Sprite box;
         MouseState state;
         Player _arrow;
         Laser newLaser;
         List<Enemy> incomingEnemies = new List<Enemy>();
+        List<Enemy> delEnemies = new List<Enemy>();
         GameState cState = GameState.Menu; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
@@ -77,8 +79,11 @@ namespace Hackerman
         bool fileExists = false;
         bool launchExternal = true;
         bool fileLoadAllowance = true;
+        int threadCount = 1;
+        System.Timers.Timer aTimer = new System.Timers.Timer();
+        bool allowedMOvement = false;
         
-        
+
         //string controls = "Go";
         Enemy blank = new Enemy();
         Thread timerThread;
@@ -87,6 +92,7 @@ namespace Hackerman
         int coordinateYcomponent;
         int score = 0;
         int round = 1;
+        int intTimer = 0;
         
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -277,6 +283,10 @@ namespace Hackerman
                 return false;
             }
         }
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            intTimer += 1;
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -298,6 +308,10 @@ namespace Hackerman
         /// </summary>
         protected override void LoadContent()
         {
+            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Interval = 1000;
+            aTimer.Enabled = true;
+
             // Fonts
             playerScore = Content.Load<SpriteFont>("Score");
             menuFont = Content.Load<SpriteFont>("menuFont");
@@ -553,61 +567,88 @@ namespace Hackerman
 
                 //make a separate thread for a timer or use the built in timer so that the player could actually move around before being attacked
                 //make a thread for enemy spawning for each round to give the player some breathing space 
-                if (blank.EnemyCount <= 0)
+                if (incomingEnemies.Count <= 0)
                 {
-                    round++;
-                    timerThread.Start();
-                    timerThread.Join();
+                    aTimer.Start();
+                    if(intTimer == 3)
+                    {
+                        allowedMOvement = true;
+                        aTimer.Stop();
+                        intTimer = 0;
+                        EnemySpawn();
+                        for (int i = 0; i < incomingEnemies.Count; i++)
+                        {
+                            incomingEnemies[i].Texture = enemyTex;
+                        }
 
-                }
-                for (int i = 0; i < incomingEnemies.Count; i++)
-                {
-                    incomingEnemies[i].Strength = 0;//reset the enemy strength once done with debug
-                    if (fileExists)
-                    {
-                        if (incomingEnemies[i].Position.Intersects(box.Position))//requires to get a temp position as they will just stop moving with the actual move
-                        {
-                            continue;
-                        }
-                       
-                        for (int t = 1; t < incomingEnemies.Count; t++)
-                        {
-                            incomingEnemies[i].FindPlayer(_arrow, incomingEnemies[t]); 
-                        }
-                        
-                        
                     }
-                    else
-                    {
-                        for (int k = 1; k < incomingEnemies.Count; k++)
-                        {
-                            incomingEnemies[i].FindPlayer(_arrow, incomingEnemies[k]);
-                        }        
-                    }
-                    
-                    incomingEnemies[i].AttackPlayer(_arrow);
                 }
-                if (newLaser.Visible)
+                if (allowedMOvement)
                 {
                     for (int i = 0; i < incomingEnemies.Count; i++)
                     {
-                        newLaser.Shoot(_arrow, incomingEnemies[i]);
+                        if (incomingEnemies.Count == 1)
+                            incomingEnemies[i].FindPlayer(_arrow, null);
+                        incomingEnemies[i].Strength = 0;//reset the enemy strength once done with debug
+                        if (fileExists)
+                        {
+                            if (incomingEnemies[i].Position.Intersects(box.Position))//requires to get a temp position as they will just stop moving with the actual move
+                            {
+                                continue;
+                            }
+
+                            for (int t = 0; t < incomingEnemies.Count; t++)
+                            {
+                                if (t == i)
+                                {
+                                    continue;
+                                }
+                                incomingEnemies[i].FindPlayer(_arrow, incomingEnemies[t]);
+                            }
+
+
+                        }
+                        else
+                        {
+                            for (int k = 0; k < incomingEnemies.Count; k++)
+                            {
+                                if (k == i)
+                                {
+                                    continue;
+                                }
+                                incomingEnemies[i].FindPlayer(_arrow, incomingEnemies[k]);
+                            }
+                        }
+
+                        incomingEnemies[i].AttackPlayer(_arrow);
                     }
-                    
-                }
-                for (int i = 0; i < incomingEnemies.Count; i++)
-                {
-                    if (incomingEnemies[i].CheckForDeath(newLaser))
+                    if (newLaser.Visible)
                     {
-                        incomingEnemies[i].Alive = false;
-                        incomingEnemies[i].Strength = 0;
-                        incomingEnemies[i].Speed = 0;
-                        incomingEnemies[i].X = 10000;
-                        incomingEnemies.Remove(incomingEnemies[i]);
-                        score++;
+                        for (int i = 0; i < incomingEnemies.Count; i++)
+                        {
+                            newLaser.Shoot(_arrow, incomingEnemies[i]);
+                        }
+
                     }
+                    for (int i = 0; i < incomingEnemies.Count; i++)//this list should be used to find out who died, ocne found, go back up or right after 
+                    {
+                        if (incomingEnemies[i].CheckForDeath(newLaser))
+                        {
+                            incomingEnemies[i].Alive = false;
+                            incomingEnemies[i].Strength = 0;
+                            incomingEnemies[i].Speed = 0;
+                            incomingEnemies[i].X = 10000;
+                            delEnemies.Add(incomingEnemies[i]);
+                            score++;
+                        }
+                    }
+                    foreach (var item in delEnemies)
+                    {
+                        incomingEnemies.Remove(item);
+                    }
+
                 }
-                
+
 
                 if (_arrow.Health == 0)
                 {
