@@ -28,7 +28,7 @@ namespace Hackerman
         SpriteBatch spriteBatch;
         
         //Textures
-        Texture2D mainmenu;
+        Texture2D background;
         Texture2D interfacaOfPlay;
         Texture2D dot;
         Texture2D enemyTex;
@@ -64,7 +64,7 @@ namespace Hackerman
         Rectangle exit = new Rectangle(0, 500, 379, 86);
         Rectangle hack = new Rectangle( 125, 25, 948, 116);
 
-        // Animation 
+        /* Animation 
         int frame;
         double timeCounter;
         double fps;
@@ -74,7 +74,10 @@ namespace Hackerman
         const int WALK_FRAME_COUNT = 4;
         const int H_RECT_Y_OFFSET = 100;
         const int H_RECT_HEIGHT = 31;
-        const int H_RECT_WIDTH = 31;
+        const int H_RECT_WIDTH = 31;*/
+
+        // Vector attribute for the background 
+        Vector2 backMove = new Vector2(0,0);
 
 
         Sprite _dot;
@@ -92,7 +95,6 @@ namespace Hackerman
         bool fileLoadAllowance = true;
         
         
-        //string controls = "Go";
         Enemy blank = new Enemy();
         Thread timerThread;
 
@@ -221,21 +223,45 @@ namespace Hackerman
         
         public void ScreenWarp()
         {
-            if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
+            if (_arrow.X > GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
+
+                backMove += new Vector2(-5, 0);
+                if (backMove == new Vector2(-25, 0))
+                {
+                    backMove = new Vector2(-25, 0);
+                }
             }
             else if (_arrow.X <= 50)
             {
                 _arrow.X +=10;
+
+                backMove -= new Vector2(-5, 0);
+                if(backMove == new Vector2(-25, 0))
+                {
+                    backMove = new Vector2(-25, 0);
+                }
             }
             else if (_arrow.Y > GraphicsDevice.Viewport.Height-50)
             {
                 _arrow.Y -= 10;
+
+                backMove += new Vector2(0, -5);
+                if (backMove == new Vector2(0, -25))
+                {
+                    backMove = new Vector2(0, -25);
+                }
             }
             else if (_arrow.Y <= 50)
             {
                 _arrow.Y += 10;
+
+                backMove -= new Vector2(0, -5);
+                if (backMove == new Vector2(0, -25))
+                {
+                    backMove = new Vector2(0, -25);
+                }
             }
         }
 
@@ -298,9 +324,9 @@ namespace Hackerman
             //We should initialize the player only, without the dot since if we initialize the dot,
             //it might appear on the menu screen, we don't want that 
 
-            // Initialize the animation 
+            /* Initialize the animation 
             fps = 10.0;
-            timePerFrame = 1.0 / fps;
+            timePerFrame = 1.0 / fps;*/
 
             base.Initialize();
         }
@@ -321,7 +347,7 @@ namespace Hackerman
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("bug");
             laserTex = Content.Load<Texture2D>("Projectile");
-            mainmenu = Content.Load<Texture2D>("HackLvl2");
+            background = Content.Load<Texture2D>("HackLvl2");
             menuRectangle = Content.Load<Texture2D>("rectangle");
             fHealth = Content.Load<Texture2D>("Full Health");
             twoHealth = Content.Load<Texture2D>("2-3 Health");
@@ -460,7 +486,7 @@ namespace Hackerman
                 MediaPlayer.Resume();
             }
 
-            // Handle animation timing
+            /* Handle animation timing
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
             if(timeCounter >= timePerFrame)
             {
@@ -471,7 +497,8 @@ namespace Hackerman
                 }
 
                 timeCounter -= timePerFrame;
-            }
+                
+            }*/
 
             // Menu State 
             if (cState == GameState.Menu)
@@ -728,7 +755,7 @@ namespace Hackerman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
@@ -765,7 +792,7 @@ namespace Hackerman
                 {
                     incomingEnemies[i].FacePlayer(_arrow);
                 }
-                spriteBatch.Draw(mainmenu, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(background, backMove, scale: new Vector2(1f));
                 spriteBatch.DrawString(playerScore, "Score: "+ String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
                 if (fileExists == true)
                 {
@@ -820,7 +847,7 @@ namespace Hackerman
             if(cState == GameState.Pause)
             {
                 // Having the game in the background 
-                spriteBatch.Draw(mainmenu, position: new Vector2(0, 0));
+                spriteBatch.Draw(background, position: new Vector2(0, 0));
                 spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
                 if (fileExists == true)
                 {
