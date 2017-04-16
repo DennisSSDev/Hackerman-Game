@@ -49,7 +49,7 @@ namespace Hackerman
         Texture2D oneHealth;
         Texture2D noHealth;
         Texture2D hackSprite;
-        Texture2D hackSpritesheet;
+        //Texture2D hackSpritesheet;
 
         // Font textures;
         SpriteFont playerScore;
@@ -246,41 +246,41 @@ namespace Hackerman
             if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
-
+                box.X -= 5;
                 backMove += new Vector2(-5, 0);
-                if (backMove == new Vector2(-25, 0))
+                if (backMove == new Vector2(-5, 0))
                 {
-                    backMove = new Vector2(-25, 0);
+                    backMove = new Vector2(-5, 0);
                 }
             }
             else if (_arrow.X <= 50)
             {
                 _arrow.X +=10;
-
+                box.X += 5;
                 backMove -= new Vector2(-5, 0);
-                if(backMove == new Vector2(-25, 0))
+                if(backMove == new Vector2(-5, 0))
                 {
-                    backMove = new Vector2(-25, 0);
+                    backMove = new Vector2(-5, 0);
                 }
             }
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height-50)
             {
                 _arrow.Y -= 10;
-
+                box.Y -= 5;
                 backMove += new Vector2(0, -5);
-                if (backMove == new Vector2(0, -25))
+                if (backMove == new Vector2(0, -5))
                 {
-                    backMove = new Vector2(0, -25);
+                    backMove = new Vector2(0, -5);
                 }
             }
             else if (_arrow.Y <= 50)
             {
                 _arrow.Y += 10;
-
+                box.Y += 5;
                 backMove -= new Vector2(0, -5);
-                if (backMove == new Vector2(0, -25))
+                if (backMove == new Vector2(0, -5))
                 {
-                    backMove = new Vector2(0, -25);
+                    backMove = new Vector2(0, -5);
                 }
             }
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height - 50 && _arrow.X >= GraphicsDevice.Viewport.Width - 50 && Keyboard.GetState().IsKeyDown(Keys.D)
@@ -326,18 +326,6 @@ namespace Hackerman
             }
         }
 
-        public bool DoubleKeyPress(Keys k, Keys u)
-        {
-            kbState = Keyboard.GetState();
-            if ((kbState.IsKeyDown(k) && kbState.IsKeyDown(u)) && ((previousKbState.IsKeyUp(k) && previousKbState.IsKeyUp(u))))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             intTimer += 1;
