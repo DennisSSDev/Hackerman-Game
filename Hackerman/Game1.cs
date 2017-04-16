@@ -12,6 +12,7 @@ using System.Timers;
 
 namespace Hackerman
 {//Collabarative work present from Alessandro, Anthony, Dennis
+    //add 2 more timers: one for the enemy spawning, so that they don't spawn all at the same time and another for the shots cooldown so that it won't be a bullet fest
     enum GameState
     {
         Game,
@@ -89,6 +90,8 @@ namespace Hackerman
         Laser newLaser;
         List<Enemy> incomingEnemies = new List<Enemy>();
         List<Enemy> delEnemies = new List<Enemy>();
+        List<Laser> laserShots = new List<Laser>();
+        List<Laser> delLaserShots = new List<Laser>();
         GameState cState = GameState.Menu; 
         Vector2 dPos = new Vector2(0, 0);
         KeyboardState kbState;
@@ -97,10 +100,18 @@ namespace Hackerman
         bool launchExternal = true;
         bool fileLoadAllowance = true;
         int threadCount = 1;
-        System.Timers.Timer aTimer = new System.Timers.Timer();
+        System.Timers.Timer aTimer = new System.Timers.Timer();//timer per round
+        System.Timers.Timer aTimerForEnemies = new System.Timers.Timer();//timer per each enemy spawn
+        int shotCoolDown = 0;//timer for shot coolDown
+        System.Timers.Timer aTimerForCoolDown = new System.Timers.Timer();
+        bool allowedShot = true;
+        bool allowedSpawn = false;
         bool allowedMOvement = false;
-        
-        
+        int addedLasers = -1;
+        MouseState forLeftClickcur;
+        MouseState forLeftClickprev;
+
+
         Enemy blank = new Enemy();
         Thread timerThread;
 
@@ -108,6 +119,7 @@ namespace Hackerman
         int coordinateYcomponent;
         int score = 0;
         int round = 1;
+        int difficulty = 1;
         int intTimer = 0;
         
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
@@ -122,28 +134,29 @@ namespace Hackerman
 
         public void EnemySpawn()
         {
+            Random speedSetter = new Random();
             Random xANDySetter = new Random();
-            for (int i = 0; i < round * 2 + 3; i++)
+            for (int i = 0; i < round * 2 + 1; i++)
             {
                 int sideSetter = xANDySetter.Next(0, 4);
                 if(sideSetter == 0)//TOP OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), 0, 100, 100, 0, 0, 0f, 5f, Color.White));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), 0, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 1)//LEFT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(0, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White));
+                    incomingEnemies.Add(new Enemy(0, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 2)//BUTTOM OF THE BOX 
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height, 100, 100, 0, 0, 0f, 5f, Color.White));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 3)//RIGHT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White));
+                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
                     blank.EnemyCount++;
                 }
                 else
@@ -151,13 +164,13 @@ namespace Hackerman
                     return;
                 }
             }
-            for (int i = 0; i < incomingEnemies.Count; i++)
+            /*for (int i = 0; i < incomingEnemies.Count; i++)
             {
                 for (int j = 1; j < incomingEnemies.Count; j++)
                 {
                     incomingEnemies[i].ColissionSpawn(incomingEnemies[j]);
                 }
-            }
+            }*/
         }
          
         public void PlayerControls()//allows the control of the player
@@ -230,7 +243,7 @@ namespace Hackerman
         
         public void ScreenWarp()
         {
-            if (_arrow.X > GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
+            if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
 
@@ -250,7 +263,7 @@ namespace Hackerman
                     backMove = new Vector2(-25, 0);
                 }
             }
-            else if (_arrow.Y > GraphicsDevice.Viewport.Height-50)
+            else if (_arrow.Y >= GraphicsDevice.Viewport.Height-50)
             {
                 _arrow.Y -= 10;
 
@@ -269,6 +282,12 @@ namespace Hackerman
                 {
                     backMove = new Vector2(0, -25);
                 }
+            }
+            else if (_arrow.Y >= GraphicsDevice.Viewport.Height - 50 && _arrow.X >= GraphicsDevice.Viewport.Width - 50 && Keyboard.GetState().IsKeyDown(Keys.D)
+                && Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                _arrow.Y -= 50;
+                _arrow.X -= 50;
             }
         }
 
@@ -324,6 +343,17 @@ namespace Hackerman
             intTimer += 1;
         }
 
+        private void OnTimedEventForSpawnEnemy(object source, ElapsedEventArgs e)
+        {
+            allowedSpawn = true;
+        }
+        private void OnTimeEventForCoolDown(object source, ElapsedEventArgs e)
+        {
+            shotCoolDown = 0;
+            allowedShot = true;
+            aTimerForCoolDown.Stop();
+        }
+
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -351,6 +381,14 @@ namespace Hackerman
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             aTimer.Interval = 1000;
             aTimer.Enabled = true;
+
+            aTimerForEnemies.Elapsed += new ElapsedEventHandler(OnTimedEventForSpawnEnemy);
+            aTimerForEnemies.Interval = 50;
+            aTimerForEnemies.Enabled = true;
+
+            aTimerForCoolDown.Elapsed += new ElapsedEventHandler(OnTimeEventForCoolDown);
+            aTimerForCoolDown.Interval = 3000;
+            aTimerForCoolDown.Enabled = true;
 
             // Fonts
             playerScore = Content.Load<SpriteFont>("Score");
@@ -424,7 +462,7 @@ namespace Hackerman
             {
                 Origin = new Vector2(hackSprite.Bounds.Center.X, hackSprite.Bounds.Center.Y)
             };
-            newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, 0.1f, 1f, Color.White);
+            newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, 0f, 1f, Color.White);
             if (fileExists != false)
             {
                 box = new Sprite(coordinateXcomponent, coordinateYcomponent, 200, 200, 0,
@@ -455,8 +493,7 @@ namespace Hackerman
         {
             Rectangle resetPlayerPos = new Rectangle(300, 400, 100, 100);
             _arrow.Position = resetPlayerPos;
-            newLaser.Position = _arrow.Position;
-            newLaser.Visible = false;
+            
             Rectangle resetEnemyPos = new Rectangle(0, 0, 100, 100);
             _arrow.Health = 3;
         }
@@ -563,6 +600,26 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
+                
+                if (incomingEnemies.Count <= 0)
+                {
+                    aTimer.Start();
+                    if (intTimer == 3)
+                    {
+                        
+                        allowedMOvement = true;
+                        aTimer.Stop();
+                        round++;
+                        intTimer = 0;
+                        EnemySpawn();
+                        for (int i = 0; i < incomingEnemies.Count; i++)
+                        {
+                            incomingEnemies[i].Texture = enemyTex;
+                            incomingEnemies[i].RotateForPlayer(_arrow);
+                        }
+
+                    }
+                }
                 if (fileLoadAllowance)
                 {
                     if (fileExists)
@@ -591,20 +648,37 @@ namespace Hackerman
 
 
 
-                MouseState forLeftClick = Mouse.GetState();
-                if (forLeftClick.LeftButton == ButtonState.Pressed && state.LeftButton == ButtonState.Released)
+                forLeftClickcur = Mouse.GetState();
+                if (forLeftClickcur.LeftButton == ButtonState.Pressed && forLeftClickprev.LeftButton == ButtonState.Pressed)
                 {
-                    newLaser.Visible = true;
+                    
+                    if (shotCoolDown == 50)
+                    {
+                        allowedShot = false;
+                        aTimerForCoolDown.Start();
+                    }
+                    if(allowedShot == true)
+                    {
+                        laserShots.Add(new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, 0.1f, 1f, Color.White));
+                        addedLasers++;
+                        laserShots[addedLasers].Texture = laserTex;
+                        laserShots[addedLasers].Visible = true;
+                        shotCoolDown++;
+                    }
+                    
 
+                }
+                forLeftClickprev = forLeftClickcur;
+                
+                foreach (var item in laserShots)
+                {
+                    if (item.Visible)
+                    {
+                      item.Shoot(_arrow);
+                        
+                    }
                 }
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
-
-                if (newLaser.Visible == false) 
-                {
-                    newLaser.X = _arrow.X;
-                    newLaser.Y = _arrow.Y;
-                    newLaser.Rotation = _arrow.Rotation+18f;
-                }
                 state = Mouse.GetState();
                 dPos.X = _arrow.X - state.X;
                 dPos.Y = _arrow.Y - state.Y;
@@ -621,28 +695,13 @@ namespace Hackerman
 
                 //make a separate thread for a timer or use the built in timer so that the player could actually move around before being attacked
                 //make a thread for enemy spawning for each round to give the player some breathing space 
-                if (incomingEnemies.Count <= 0)
-                {
-                    aTimer.Start();
-                    if(intTimer == 3)
-                    {
-                        allowedMOvement = true;
-                        aTimer.Stop();
-                        intTimer = 0;
-                        EnemySpawn();
-                        for (int i = 0; i < incomingEnemies.Count; i++)
-                        {
-                            incomingEnemies[i].Texture = enemyTex;
-                        }
-
-                    }
-                }
+                
                 if (allowedMOvement)
                 {
                     for (int i = 0; i < incomingEnemies.Count; i++)
                     {
                         if (incomingEnemies.Count == 1)
-                            incomingEnemies[i].FindPlayer(_arrow, null);
+                            incomingEnemies[i].FindPlayer(_arrow);
                         incomingEnemies[i].Strength = 0;//reset the enemy strength once done with debug
                         if (fileExists)
                         {
@@ -650,57 +709,40 @@ namespace Hackerman
                             {
                                 continue;
                             }
-
-                            for (int t = 0; t < incomingEnemies.Count; t++)
-                            {
-                                if (t == i)
-                                {
-                                    continue;
-                                }
-                                incomingEnemies[i].FindPlayer(_arrow, incomingEnemies[t]);
-                            }
+                            incomingEnemies[i].FindPlayer(_arrow);//probably the reason for the increased speed is because 
+                            
 
 
                         }
                         else
                         {
-                            for (int k = 0; k < incomingEnemies.Count; k++)
-                            {
-                                if (k == i)
-                                {
-                                    continue;
-                                }
-                                incomingEnemies[i].FindPlayer(_arrow, incomingEnemies[k]);
-                            }
+                            incomingEnemies[i].FindPlayer(_arrow);
+                            
                         }
 
                         incomingEnemies[i].AttackPlayer(_arrow);
                     }
-                    if (newLaser.Visible)
+                }
+                for (int i = 0; i < incomingEnemies.Count; i++)//this list should be used to find out who died, ocne found, go back up or right after 
+                {
+                    foreach (var item in laserShots)
                     {
-                        for (int i = 0; i < incomingEnemies.Count; i++)
+                        if (incomingEnemies[i].CheckForDeath(item))
                         {
-                            newLaser.Shoot(_arrow, incomingEnemies[i]);
-                        }
-
-                    }
-                    for (int i = 0; i < incomingEnemies.Count; i++)//this list should be used to find out who died, ocne found, go back up or right after 
-                    {
-                        if (incomingEnemies[i].CheckForDeath(newLaser))
-                        {
-                            incomingEnemies[i].Alive = false;
                             incomingEnemies[i].Strength = 0;
                             incomingEnemies[i].Speed = 0;
                             incomingEnemies[i].X = 10000;
                             delEnemies.Add(incomingEnemies[i]);
+                            item.Visible = false;
                             score++;
                         }
                     }
-                    foreach (var item in delEnemies)
-                    {
-                        incomingEnemies.Remove(item);
-                    }
-
+                }
+                foreach (var item in delEnemies)
+                {
+                    
+                    incomingEnemies.Remove(item);
+                    
                 }
 
 
@@ -830,7 +872,7 @@ namespace Hackerman
 
             if (cState == GameState.Game)
             {
-                for (int i = 0; i < incomingEnemies.Count; i++)
+                for (int i = 0; i < incomingEnemies.Count; i++)//needs a fix, first they need to face the player, then they should be drawn with a dfferent persepctive
                 {
                     incomingEnemies[i].FacePlayer(_arrow);
                 }
@@ -849,9 +891,13 @@ namespace Hackerman
                         incomingEnemies[i].Draw(spriteBatch, gameTime);
                     }
                 }
-                if (newLaser.Visible == true)
+                foreach (var item in laserShots)
                 {
-                    newLaser.Draw(spriteBatch, gameTime);
+                    if (item.Visible == true)
+                    {
+                        item.Draw(spriteBatch, gameTime);
+                    }
+
                 }
 
                 // Health bar
@@ -899,9 +945,12 @@ namespace Hackerman
                 _dot.Draw(spriteBatch, gameTime);
                 //DrawHackStanding(SpriteEffects.None);
 
-                if (newLaser.Visible == true)
+                foreach (var item in laserShots)
                 {
-                    newLaser.Draw(spriteBatch, gameTime);
+                    if (item.Visible == true)
+                    {
+                        item.Draw(spriteBatch, gameTime);
+                    }
                 }
                 
                 // Rectangle for the menu

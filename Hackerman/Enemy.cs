@@ -23,7 +23,7 @@ namespace Hackerman
         public int RectangleWidth { get; set; }
         public int EnemyCount { get; set; }//rework the class with lists
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
-            float pScale, Color pColor, int speed = 3, int strength = 1, int health = 1, bool alive = true)
+            float pScale, Color pColor, int speed, int strength = 1, int health = 1, bool alive = true)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   
         {
             this.speed = speed;
@@ -32,7 +32,7 @@ namespace Hackerman
             this.alive = alive;
             RectangleHeight = height;
             RectangleWidth = width;
-            
+            this.speed = speed;
         }
         public Enemy()
         {
@@ -90,6 +90,16 @@ namespace Hackerman
                 throw;
             }
         }
+        public void RotateForPlayer(Player obj)
+        {
+            if(this.X>obj.X && this.Y < obj.Y)
+            {
+                double opposite = this.Y - obj.Y;
+                double adjacent = this.X - obj.X;
+                double tangent = Math.Tan(opposite / adjacent);
+                this.Rotation -= (float)tangent;
+            }
+        }
         public void FacePlayer(Player obj)
         {
             int dPosX = this.X - obj.X;
@@ -104,9 +114,8 @@ namespace Hackerman
                 obj.X += 20;
             }
         }
-        public void FindPlayer(Player obj, Enemy obj2)
+        public void FindPlayer(Player obj)
         {
-            
             if (this.X != obj.X && this.Y != obj.Y)
                 {
                 Vector2 someVec = new Vector2(this.X - obj.X, this.Y - obj.Y);
@@ -115,17 +124,17 @@ namespace Hackerman
                 Rectangle temp = new Rectangle(this.X, this.Y, this.RectangleWidth, this.RectangleHeight);
                 temp.X -= (int)Math.Round(someVec.X);
                 temp.Y -= (int)Math.Round(someVec.Y);
-               // if (temp.Intersects(obj2.Position))
-               // {
-                  //  this.X -= 0;
-                   // this.Y -= 0;
-                   // temp.X = this.X;
-                   // temp.Y = this.Y;
+                // if (temp.Intersects(obj2.Position))
+                // {
+                //  this.X -= 0;
+                // this.Y -= 0;
+                // temp.X = this.X;
+                // temp.Y = this.Y;
                 //}
                 //else
                 //{
-                    this.X = temp.X;
-                    this.Y = temp.Y;
+                this.X = temp.X;
+                this.Y = temp.Y;
                // }   
             }  
         }

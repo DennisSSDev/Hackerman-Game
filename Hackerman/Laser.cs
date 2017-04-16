@@ -16,6 +16,7 @@ namespace Hackerman
         private MouseState state;
         private float distanceX = 0;
         private float distanceY=0;
+        Vector2 newVec;
         public int Damage { get { return damage; } set { damage = value; } }
         public bool Visible { get { return visible; } set { visible = value; } }
         private Player playerstats = new Player();
@@ -27,35 +28,30 @@ namespace Hackerman
             this.visible = visible;
         }
 
-        public void Shoot(Player obj, Enemy obj2)
+        public void Shoot(Player obj)
         {
-
             //EDIT: There is an important error: if you are able to catch the shot while it's being shot it will change the trajectory of the shot
             //Solutions: 
             //FIX the method, or... 
             //make the player to always be slower than the shot so that he could never be able to catch
-            if (state.X == 0 && state.Y == 0)
+            if (this.X == obj.X && this.Y == obj.Y)
             {
                 state = Mouse.GetState();
                 distanceX = obj.X - state.X;
                 distanceY = obj.Y - state.Y;
-                this.Rotation = (float)(Math.Atan2(distanceY, distanceX));//might be a bad idea
+                newVec = new Vector2((float)distanceX, (float)distanceY);
+                
             }//this is all sorts of wrong, since sometimes the shots don't reach the destination and might start shooting in the same direction
-            else if (this.X < 0 || this.Y < 0 || this.X > 1200 || this.Y > 800)
+            if (this.X < 0 || this.Y < 0 || this.X > 1200 || this.Y > 800)
             {
                 //also add if the laser is visible and collides with the palyer position, make sure then to add a little to the shots starting point as it will always collide
-                state = Mouse.GetState();
                 this.Visible = false;
             }
             if (visible && this.X != distanceX && this.Y != distanceY)//change from distanceX and distanceY to the bounds of the screen 
             {
-                distanceX = obj.X - state.X;
-                distanceY = obj.Y - state.Y;
-                Vector2 newVec = new Vector2((float)distanceX, (float)distanceY);
-                newVec.Normalize();
                 //might want to look for specific quadronts
-                this.X -= 3*(int)newVec.X;
-                this.Y -= 3*(int)newVec.Y;
+                this.X -= (int)newVec.X / 25;
+                this.Y -= (int)newVec.Y / 25;
                 //just look for the state x and y and add a static number until x and y of obj do not reach state.x and state.y, if state.x and state.y are reached,
                 //run in the same direction untuil off screen 
             }
