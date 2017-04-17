@@ -172,6 +172,7 @@
 #begin Score.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Score.spritefont
 
@@ -190,6 +191,7 @@
 #begin menuFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:menuFont.spritefont
 
@@ -208,6 +210,7 @@
 #begin Controls.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Controls.spritefont
 
@@ -301,12 +304,6 @@
 /processorParam:TextureFormat=Color
 /build:Projectile.png
 
-#begin mSound.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:mSound.wav
-
 #begin gameOver.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -348,4 +345,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:HackBackground.png
+
+#begin mSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:mSound.wav
 
