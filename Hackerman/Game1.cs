@@ -246,41 +246,41 @@ namespace Hackerman
             if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
-                box.X -= 5;
-                backMove += new Vector2(-5, 0);
-                if (backMove == new Vector2(-5, 0))
+                if (backMove != new Vector2(-5, 0))
                 {
-                    backMove = new Vector2(-5, 0);
+                    box.X -= 5;
+                    backMove += new Vector2(-5, 0);
+                    return;
                 }
             }
             else if (_arrow.X <= 50)
             {
                 _arrow.X +=10;
-                box.X += 5;
-                backMove -= new Vector2(-5, 0);
-                if(backMove == new Vector2(-5, 0))
+                if(backMove != new Vector2(-15, 0))
                 {
-                    backMove = new Vector2(-5, 0);
+                    box.X += 5;
+                    backMove -= new Vector2(-5, 0);
+                    return;
                 }
             }
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height-50)
             {
                 _arrow.Y -= 10;
-                box.Y -= 5;
-                backMove += new Vector2(0, -5);
-                if (backMove == new Vector2(0, -5))
+                if (backMove != new Vector2(0, -5))
                 {
-                    backMove = new Vector2(0, -5);
+                    box.Y -= 5;
+                    backMove += new Vector2(0, -5);
+                    return;
                 }
             }
             else if (_arrow.Y <= 50)
             {
                 _arrow.Y += 10;
-                box.Y += 5;
-                backMove -= new Vector2(0, -5);
-                if (backMove == new Vector2(0, -5))
+                if (backMove != new Vector2(0, 5))
                 {
-                    backMove = new Vector2(0, -5);
+                    box.Y += 5;
+                    backMove += new Vector2(0, 5);
+                    return;
                 }
             }
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height - 50 && _arrow.X >= GraphicsDevice.Viewport.Width - 50 && Keyboard.GetState().IsKeyDown(Keys.D)
@@ -923,7 +923,7 @@ namespace Hackerman
             if(cState == GameState.Pause)
             {
                 // Having the game in the background 
-                spriteBatch.Draw(background, position: new Vector2(0, 0));
+                spriteBatch.Draw(background, backMove);
                 spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
                 if (fileExists == true)
                 {
