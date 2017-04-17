@@ -40,6 +40,8 @@ namespace Hackerman
                 distanceX = obj.X - state.X;
                 distanceY = obj.Y - state.Y;
                 newVec = new Vector2((float)distanceX, (float)distanceY);
+                //newVec.Normalize();
+               // newVec = newVec*4;
                 
             }//this is all sorts of wrong, since sometimes the shots don't reach the destination and might start shooting in the same direction
             if (this.X < 0 || this.Y < 0 || this.X > 1200 || this.Y > 800)
@@ -47,7 +49,7 @@ namespace Hackerman
                 //also add if the laser is visible and collides with the palyer position, make sure then to add a little to the shots starting point as it will always collide
                 this.Visible = false;
             }
-            if (visible && this.X != distanceX && this.Y != distanceY)//change from distanceX and distanceY to the bounds of the screen 
+            if (visible)//change from distanceX and distanceY to the bounds of the screen 
             {
                 //might want to look for specific quadronts
                 this.X -= (int)newVec.X / 25;

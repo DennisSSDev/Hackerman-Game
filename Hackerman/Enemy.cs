@@ -40,9 +40,12 @@ namespace Hackerman
         }
         public bool AttackPlayer(Player obj)
         {
-            if (this.Position.Intersects(obj.Position))
+            if(strength == 0)
             {
-                obj.X+=25;
+                return false;
+            }
+            else if (this.Position.Intersects(obj.Position))
+            {
                 obj.Health-=strength;
                 return true;
             }

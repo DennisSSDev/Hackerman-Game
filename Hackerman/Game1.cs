@@ -107,6 +107,7 @@ namespace Hackerman
         bool allowedShot = true;
         bool allowedSpawn = false;
         bool allowedMOvement = false;
+        System.Timers.Timer aTimerForAttackingPlayer = new System.Timers.Timer();
         int addedLasers = -1;
         MouseState forLeftClickcur;
         MouseState forLeftClickprev;
@@ -353,6 +354,14 @@ namespace Hackerman
             allowedShot = true;
             aTimerForCoolDown.Stop();
         }
+        private void OnTimeEventForEnemyAttack(object source, ElapsedEventArgs e)
+        {
+            for (int i = 0; i < incomingEnemies.Count; i++)
+            {
+                incomingEnemies[i].Strength = 1;
+            }
+            aTimerForAttackingPlayer.Stop();
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -389,6 +398,10 @@ namespace Hackerman
             aTimerForCoolDown.Elapsed += new ElapsedEventHandler(OnTimeEventForCoolDown);
             aTimerForCoolDown.Interval = 3000;
             aTimerForCoolDown.Enabled = true;
+
+            aTimerForAttackingPlayer.Elapsed += new ElapsedEventHandler(OnTimeEventForEnemyAttack);
+            aTimerForAttackingPlayer.Interval = 5000;
+            aTimerForAttackingPlayer.Enabled = true;
 
             // Fonts
             playerScore = Content.Load<SpriteFont>("Score");
@@ -702,7 +715,7 @@ namespace Hackerman
                     {
                         if (incomingEnemies.Count == 1)
                             incomingEnemies[i].FindPlayer(_arrow);
-                        incomingEnemies[i].Strength = 0;//reset the enemy strength once done with debug
+                        //reset the enemy strength once done with debug
                         if (fileExists)
                         {
                             if (incomingEnemies[i].Position.Intersects(box.Position))//requires to get a temp position as they will just stop moving with the actual move
@@ -720,7 +733,15 @@ namespace Hackerman
                             
                         }
 
-                        incomingEnemies[i].AttackPlayer(_arrow);
+                        if(incomingEnemies[i].AttackPlayer(_arrow) == true)
+                        {
+                            for (int j = 0; j < incomingEnemies.Count; j++)
+                            {
+                                incomingEnemies[j].Strength = 0;
+                            }
+                            aTimerForAttackingPlayer.Start();
+
+                        }
                     }
                 }
                 for (int i = 0; i < incomingEnemies.Count; i++)//this list should be used to find out who died, ocne found, go back up or right after 
