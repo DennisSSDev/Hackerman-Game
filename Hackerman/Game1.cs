@@ -49,6 +49,10 @@ namespace Hackerman
         Texture2D oneHealth;
         Texture2D noHealth;
         Texture2D hackSprite;
+        Texture2D coolDownStart;
+        Texture2D coolDownTwo;
+        Texture2D coolDownOne;
+        Texture2D coolDownDone;
         //Texture2D hackSpritesheet;
 
         // Font textures;
@@ -249,7 +253,7 @@ namespace Hackerman
                 _arrow.X-=10;
                 if (backMove != new Vector2(-5, 0))
                 {
-                    box.X -= 5;
+                    //box.X -= 5;
                     backMove += new Vector2(-5, 0);
                     return;
                 }
@@ -259,7 +263,7 @@ namespace Hackerman
                 _arrow.X +=10;
                 if(backMove != new Vector2(-15, 0))
                 {
-                    box.X += 5;
+                    //box.X += 5;
                     backMove -= new Vector2(-5, 0);
                     return;
                 }
@@ -269,7 +273,7 @@ namespace Hackerman
                 _arrow.Y -= 10;
                 if (backMove != new Vector2(0, -5))
                 {
-                    box.Y -= 5;
+                    //box.Y -= 5;
                     backMove += new Vector2(0, -5);
                     return;
                 }
@@ -279,7 +283,7 @@ namespace Hackerman
                 _arrow.Y += 10;
                 if (backMove != new Vector2(0, 5))
                 {
-                    box.Y += 5;
+                    //box.Y += 5;
                     backMove += new Vector2(0, 5);
                     return;
                 }
@@ -408,6 +412,10 @@ namespace Hackerman
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
             hackSprite = Content.Load<Texture2D>("HackSprite");
+            coolDownStart = Content.Load<Texture2D>("CooldownStart");
+            coolDownOne = Content.Load<Texture2D>("CooldownOne");
+            coolDownTwo = Content.Load<Texture2D>("CooldownTwo");
+            coolDownDone = Content.Load<Texture2D>("CooldownDone");
             //hackSpritesheet = Content.Load<Texture2D>("HackSpriteSheet");
 
             // Music and sound
@@ -927,6 +935,12 @@ namespace Hackerman
                 else if (_arrow.Health == 0)
                 {
                     spriteBatch.Draw(noHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+
+                // Cooldown bar 
+                if(aTimerForCoolDown.Enabled == true)
+                {
+                    spriteBatch.(coolDownStart, new Vector2(0, 0), Color.White);
                 }
             }
 
