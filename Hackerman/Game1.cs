@@ -107,7 +107,11 @@ namespace Hackerman
         bool allowedShot = true;
         bool allowedSpawn = false;
         bool allowedMOvement = false;
+        bool allowedMoveAfterSpawn = false;
         System.Timers.Timer aTimerForAttackingPlayer = new System.Timers.Timer();
+        System.Timers.Timer timerForIndividualSpawn = new System.Timers.Timer();
+        int allower = 0;
+        int counterPerSpawn = 0;
         int addedLasers = -1;
         MouseState forLeftClickcur;
         MouseState forLeftClickprev;
@@ -339,7 +343,7 @@ namespace Hackerman
         private void OnTimeEventForCoolDown(object source, ElapsedEventArgs e)
         {
             shotCoolDown = 0;
-            allowedShot = true;
+            allowedShot = false;
             aTimerForCoolDown.Stop();
         }
         private void OnTimeEventForEnemyAttack(object source, ElapsedEventArgs e)
@@ -348,6 +352,11 @@ namespace Hackerman
             {
                 incomingEnemies[i].Strength = 1;
             }
+            aTimerForAttackingPlayer.Stop();
+        }
+        private void OnTimeEventForIndividualSpawn(object source, ElapsedEventArgs e)
+        {
+            
             aTimerForAttackingPlayer.Stop();
         }
 
@@ -390,6 +399,10 @@ namespace Hackerman
             aTimerForAttackingPlayer.Elapsed += new ElapsedEventHandler(OnTimeEventForEnemyAttack);
             aTimerForAttackingPlayer.Interval = 5000;
             aTimerForAttackingPlayer.Enabled = true;
+
+            timerForIndividualSpawn.Elapsed += new ElapsedEventHandler(OnTimeEventForIndividualSpawn);
+            timerForIndividualSpawn.Interval = 100;
+            timerForIndividualSpawn.Enabled = true;
 
             // Fonts
             playerScore = Content.Load<SpriteFont>("Score");
@@ -604,6 +617,7 @@ namespace Hackerman
                 
                 if (incomingEnemies.Count <= 0)
                 {
+                    counterPerSpawn = 0;
                     aTimer.Start();
                     if (intTimer == 3)
                     {
@@ -691,14 +705,23 @@ namespace Hackerman
                 PlayerControls();
 
                 ScreenWarp();
-
+                
+                //if (allowedMOvement == false && incomingEnemies[i + 1] != null)//this should go through the list and set the allowed movement attribute for all enemies to true once allowed by the timer
+                {
+                    allowedMoveAfterSpawn = true;
+                    allower = 0;
+                    timerForIndividualSpawn.Interval += 5000;
+                    timerForIndividualSpawn.Start();
+                    counterPerSpawn++;
+                    //incomingEnemies[i].FindPlayer(_arrow);
+                }
 
 
                 //make a separate thread for a timer or use the built in timer so that the player could actually move around before being attacked
                 //make a thread for enemy spawning for each round to give the player some breathing space 
-                
-                if (allowedMOvement)
-                {
+
+                if (allowedMOvement)//add a new attribute for the enemy ( a bool) that is either true or false that will change as the timer progresses(for spawn only)
+                {//once the movement is allowed for all enemies they should all start moving 
                     for (int i = 0; i < incomingEnemies.Count; i++)
                     {
                         if (incomingEnemies.Count == 1)
@@ -710,7 +733,11 @@ namespace Hackerman
                             {
                                 continue;
                             }
-                            incomingEnemies[i].FindPlayer(_arrow);//probably the reason for the increased speed is because 
+                            if(counterPerSpawn >= incomingEnemies.Count)
+                            {
+                                incomingEnemies[i].FindPlayer(_arrow);
+
+                            }
                             
 
 
