@@ -967,7 +967,7 @@ namespace Hackerman
                 // Cooldown bar 
                 if(aTimerForCoolDown.Enabled == true)
                 {
-                    spriteBatch.(coolDownStart, new Vector2(0, 0), Color.White);
+                    spriteBatch.Draw(coolDownStart, new Vector2(0, 0), Color.White);
                 }
             }
 
