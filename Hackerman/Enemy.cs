@@ -17,13 +17,14 @@ namespace Hackerman
         private int strength;
         private bool alive = true;
         public int Speed { get { return speed; } set { speed = value; } }
+        public bool AllowedMovement { get; set; }
         public bool Alive { get { return alive; } set { alive = value; } }
         public int Strength { get { return strength; } set { strength = value; } }
         public int RectangleHeight { get; set; }
         public int RectangleWidth { get; set; }
         public int EnemyCount { get; set; }//rework the class with lists
         public Enemy(int xR, int yR, int height, int width, int xV, int yV, float pRotation,
-            float pScale, Color pColor, int speed, int strength = 1, int health = 1, bool alive = true)
+            float pScale, Color pColor, int speed, int strength = 1, int health = 1, bool alive = true, bool allowedMovement = false)
             :base(xR, yR, height, width, xV, yV, pRotation, pScale, pColor)   
         {
             this.speed = speed;
@@ -33,6 +34,7 @@ namespace Hackerman
             RectangleHeight = height;
             RectangleWidth = width;
             this.speed = speed;
+            AllowedMovement = allowedMovement;
         }
         public Enemy()
         {
