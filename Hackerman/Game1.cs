@@ -152,22 +152,22 @@ namespace Hackerman
                 int sideSetter = xANDySetter.Next(0, 4);
                 if(sideSetter == 0)//TOP OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), 0, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), 0, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 1)//LEFT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(0, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
+                    incomingEnemies.Add(new Enemy(0, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 2)//BUTTOM OF THE BOX 
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 3)//RIGHT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(0, 4)));
+                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else
@@ -363,6 +363,7 @@ namespace Hackerman
         private void OnTimeEventForIndividualSpawn(object source, ElapsedEventArgs e)
         {
             allowedMOvement = true;
+            continuation = false;
             aTimerForAttackingPlayer.Stop();
         }
 
@@ -407,7 +408,7 @@ namespace Hackerman
             aTimerForAttackingPlayer.Enabled = true;
 
             timerForIndividualSpawn.Elapsed += new ElapsedEventHandler(OnTimeEventForIndividualSpawn);
-            timerForIndividualSpawn.Interval = 100;
+            timerForIndividualSpawn.Interval = 1000;
             timerForIndividualSpawn.Enabled = true;
 
             // Fonts
@@ -514,7 +515,33 @@ namespace Hackerman
 
             //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
-        
+        public void SetMovement()
+        {
+            for (int i = b; i < incomingEnemies.Count; i++)
+            {
+                if (incomingEnemies[i].AllowedMovement == false)
+                {
+                    if (allowedMOvement)
+                    {
+                        incomingEnemies[i].AllowedMovement = true;
+                        b++;
+                        continuation = true;
+                        
+                        return;
+                    }
+                    if (continuation)
+                    {
+                        Random randomTImeCaster = new Random();
+
+                        timerForIndividualSpawn.Interval += randomTImeCaster.Next(500, 1501);
+                        timerForIndividualSpawn.Start();
+                        allowedMOvement = false;
+                    }
+                    return;
+                }
+
+            }
+        }
 
         public void HardReset()
         {
@@ -636,19 +663,22 @@ namespace Hackerman
                     if (intTimer == 3)
                     {
                         
-                        allowedMOvement = true;
+                        
                         aTimer.Stop();
                         round++;
                         intTimer = 0;
                         EnemySpawn();
                         for (int i = 0; i < incomingEnemies.Count; i++)
                         {
+                         
                             incomingEnemies[i].Texture = enemyTex;
                             incomingEnemies[i].RotateForPlayer(_arrow);
                         }
 
                     }
                 }
+                
+                
                 if (fileLoadAllowance)
                 {
                     if (fileExists)
@@ -719,15 +749,14 @@ namespace Hackerman
 
                 ScreenWarp();
 
-                //SetMovement();
-                
-                
+                SetMovement();
+
 
                 //make a thread for enemy spawning for each round to give the player some breathing space 
 
                 //add a new attribute for the enemy ( a bool) that is either true or false that will change as the timer progresses(for spawn only)
                 //once the movement is allowed for all enemies they should all start moving 
-                    for (int i = 0; i < incomingEnemies.Count; i++)
+                for (int i = 0; i < incomingEnemies.Count; i++)
                     {
                         //reset the enemy strength once done with debug
                         if (fileExists)
@@ -738,22 +767,28 @@ namespace Hackerman
                             }
                             if(incomingEnemies[i].AllowedMovement)
                             {
-                                incomingEnemies[i].FindPlayer(_arrow);
+                                for (int j = 0; j < incomingEnemies[i].Speed; j++)
+                                {
+                                    incomingEnemies[i].FindPlayer(_arrow);
+                                }
 
-                            }
+                        }
                             
 
 
                         }
                         else
                         {
-                        if (incomingEnemies[i].AllowedMovement)
-                        {
-                            incomingEnemies[i].FindPlayer(_arrow);
+                            if (incomingEnemies[i].AllowedMovement)
+                            {
+                                for(int j = 0; j<incomingEnemies[i].Speed; j++)
+                                {
+                                    incomingEnemies[i].FindPlayer(_arrow);
+                                }
+
+                            }
 
                         }
-
-                    }
 
                         if(incomingEnemies[i].AttackPlayer(_arrow) == true)
                         {
