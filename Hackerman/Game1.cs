@@ -364,7 +364,6 @@ namespace Hackerman
         private void OnTimeEventForIndividualSpawn(object source, ElapsedEventArgs e)
         {
             allowedMOvement = true;
-            continuation = false;
             aTimerForAttackingPlayer.Stop();
         }
 
@@ -409,7 +408,7 @@ namespace Hackerman
             aTimerForAttackingPlayer.Enabled = true;
 
             timerForIndividualSpawn.Elapsed += new ElapsedEventHandler(OnTimeEventForIndividualSpawn);
-            timerForIndividualSpawn.Interval = 1000;
+            timerForIndividualSpawn.Interval = 100;
             timerForIndividualSpawn.Enabled = true;
 
             // Fonts
@@ -519,7 +518,7 @@ namespace Hackerman
         }
         public void SetMovement()
         {
-            for (int i = b; i < incomingEnemies.Count; i++)
+            for (int i = b; i < incomingEnemies.Count; i++)//Need to loop through all the members of the list but not come back to them, as you don't want to start the timer twice
             {
                 if (incomingEnemies[i].AllowedMovement == false)
                 {
@@ -528,6 +527,7 @@ namespace Hackerman
                         incomingEnemies[i].AllowedMovement = true;
                         b++;
                         continuation = true;
+                        allowedMOvement = false;
                         
                         return;
                     }
@@ -535,11 +535,20 @@ namespace Hackerman
                     {
                         Random randomTImeCaster = new Random();
 
-                        timerForIndividualSpawn.Interval += randomTImeCaster.Next(500, 1501);
+                        timerForIndividualSpawn.Interval = randomTImeCaster.Next(300, 1000);
                         timerForIndividualSpawn.Start();
                         allowedMOvement = false;
+                        continuation = false;
                     }
                     return;
+                }
+                if(incomingEnemies[i].AllowedMovement == true)
+                {
+                    b++;
+                }
+                if(incomingEnemies[i] == null)
+                {
+                    b = 0;
                 }
 
             }
@@ -818,6 +827,7 @@ namespace Hackerman
                             incomingEnemies[i].X = 10000;
                             delEnemies.Add(incomingEnemies[i]);
                             item.Visible = false;
+                            b--;
                             score++;
                         }
                     }
