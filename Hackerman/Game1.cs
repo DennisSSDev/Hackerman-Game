@@ -556,6 +556,8 @@ namespace Hackerman
             score = 0;
             round = 0;
             _arrow.Health = 3;
+            backMove.X = 0;
+            backMove.Y = 0;
         }
 
 
