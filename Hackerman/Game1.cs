@@ -63,6 +63,7 @@ namespace Hackerman
         // Sound
         Song threeHundred;
         SoundEffect mSound;
+        SoundEffect hitSound;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -127,7 +128,7 @@ namespace Hackerman
         int coordinateXcomponent;
         int coordinateYcomponent;
         int score = 0;
-        int round = 1;
+        int round = 0;
         int difficulty = 1;
         int intTimer = 0;
         
@@ -255,40 +256,40 @@ namespace Hackerman
             if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
-                if (backMove != new Vector2(-5, 0))
+                if (backMove.X != -350)
                 {
                     box.X -= 5;
-                    backMove += new Vector2(-5, 0);
+                    backMove.X -= 5;
                     return;
                 }
             }
             else if (_arrow.X <= 50)
             {
                 _arrow.X +=10;
-                if(backMove != new Vector2(-15, 0))
+                if(backMove.X != 350)
                 {
                     box.X += 5;
-                    backMove -= new Vector2(-5, 0);
+                    backMove.X += 5;
                     return;
                 }
             }
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height-50)
             {
                 _arrow.Y -= 10;
-                if (backMove != new Vector2(0, -5))
+                if (backMove.Y != -300)
                 {
                     box.Y -= 5;
-                    backMove += new Vector2(0, -5);
+                    backMove.Y -= 5;
                     return;
                 }
             }
             else if (_arrow.Y <= 50)
             {
                 _arrow.Y += 10;
-                if (backMove != new Vector2(0, 5))
+                if (backMove.Y != 300)
                 {
                     box.Y += 5;
-                    backMove += new Vector2(0, 5);
+                    backMove.Y += 5;
                     return;
                 }
             }
@@ -416,7 +417,7 @@ namespace Hackerman
             // Textures
             boxForBox = Content.Load<Texture2D>("HackTemp");
             dot = Content.Load<Texture2D>("Crosshair");
-            enemyTex = Content.Load<Texture2D>("bug");
+            enemyTex = Content.Load<Texture2D>("BugWhite");
             laserTex = Content.Load<Texture2D>("Projectile");
             background = Content.Load<Texture2D>("HackLvl2");
             menuRectangle = Content.Load<Texture2D>("rectangle");
@@ -436,6 +437,7 @@ namespace Hackerman
             // Music and sound
             mSound = Content.Load<SoundEffect>("mSound");
             threeHundred = Content.Load<Song>("300MB");
+            hitSound = Content.Load<SoundEffect>("hitSound");
             MediaPlayer.Play(threeHundred);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = .15f;
@@ -520,6 +522,10 @@ namespace Hackerman
             
             Rectangle resetEnemyPos = new Rectangle(0, 0, 100, 100);
             _arrow.Health = 3;
+
+            score = 0;
+            round = 0;
+            _arrow.Health = 3;
         }
 
 
@@ -602,13 +608,12 @@ namespace Hackerman
                 if (playPressed == true)
                 {
                     cState = GameState.Game;
-                    //mSound.Play();
+                    mSound.Play();
                 }
                 else if(helpPressed == true)
                 {
                     cState = GameState.Help;
-                    //mSound.Play();
-
+                    mSound.Play();
                 }
                 else if(exitPressed == true)
                 {
@@ -617,7 +622,7 @@ namespace Hackerman
                 else if(editPressed == true)
                 {
                     cState = GameState.Edit;
-                    //mSound.Play();
+                    mSound.Play();
                 }
             }
 
@@ -669,9 +674,6 @@ namespace Hackerman
                     }
                     fileLoadAllowance = false;
                 }
-                
-
-
 
                 forLeftClickcur = Mouse.GetState();
                 if (forLeftClickcur.LeftButton == ButtonState.Pressed && forLeftClickprev.LeftButton == ButtonState.Pressed)
@@ -748,9 +750,6 @@ namespace Hackerman
                                 incomingEnemies[i].FindPlayer(_arrow);
 
                             }
-                            
-
-
                         }
                         else
                         {
@@ -765,6 +764,7 @@ namespace Hackerman
                                 incomingEnemies[j].Strength = 0;
                             }
                             aTimerForAttackingPlayer.Start();
+                            hitSound.Play();
 
                         }
                     }
@@ -923,7 +923,8 @@ namespace Hackerman
                     incomingEnemies[i].FacePlayer(_arrow);
                 }
                 spriteBatch.Draw(background, backMove, scale: new Vector2(1f));
-                spriteBatch.DrawString(playerScore, "Score: "+ String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
+                spriteBatch.DrawString(controlFont, "Score: "+ String.Format("{0:0}", score), new Vector2(875f, 5f), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.5f, SpriteEffects.None, 0f);
+                spriteBatch.DrawString(controlFont, string.Format("Round: {0}", round), new Vector2(875, 590), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.5f, SpriteEffects.None, 0f);
                 if (fileExists == true)
                 {
                     box.Draw(spriteBatch, gameTime);
@@ -980,21 +981,32 @@ namespace Hackerman
                 spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 525, 450), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "GAME OVER", new Vector2(150, 175), Color.White);
                 spriteBatch.DrawString(controlFont, String.Format("Score: {0}", score), new Vector2(150, 300), Color.White);
-                spriteBatch.DrawString(controlFont, String.Format("Rounds: {0}", score), new Vector2(150, 350), Color.White);
+                spriteBatch.DrawString(controlFont, String.Format("Round: {0}", round), new Vector2(150, 350), Color.White);
                 spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
 
             if(cState == GameState.Pause)
             {
+                for (int i = 0; i < incomingEnemies.Count; i++)
+                {
+                    incomingEnemies[i].FacePlayer(_arrow);
+                }
                 // Having the game in the background 
                 spriteBatch.Draw(background, backMove);
-                spriteBatch.DrawString(playerScore, "Score: " + String.Format("{0:0}", score), new Vector2(900f, 20f), Color.White, 0f, new Vector2(1f, 1f), 2f, SpriteEffects.None, 0f);
+                spriteBatch.DrawString(controlFont, "Score: " + String.Format("{0:0}", score), new Vector2(875f, 5f), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.5f, SpriteEffects.None, 0f);
                 if (fileExists == true)
                 {
                     box.Draw(spriteBatch, gameTime);
                 }
                 _arrow.Draw(spriteBatch, gameTime);
                 _dot.Draw(spriteBatch, gameTime);
+                for (int i = 0; i < incomingEnemies.Count; i++)
+                {
+                    if (incomingEnemies[i].Alive == true)
+                    {
+                        incomingEnemies[i].Draw(spriteBatch, gameTime);
+                    }
+                }
                 //DrawHackStanding(SpriteEffects.None);
 
                 foreach (var item in laserShots)
@@ -1004,7 +1016,27 @@ namespace Hackerman
                         item.Draw(spriteBatch, gameTime);
                     }
                 }
-                
+
+                // Health bar
+                spriteBatch.DrawString(controlFont, "Health", new Vector2(70, 15), Color.LimeGreen);
+
+                if (_arrow.Health == 3)
+                {
+                    spriteBatch.Draw(fHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+                else if (_arrow.Health == 2)
+                {
+                    spriteBatch.Draw(twoHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+                else if (_arrow.Health == 1)
+                {
+                    spriteBatch.Draw(oneHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+                else if (_arrow.Health == 0)
+                {
+                    spriteBatch.Draw(noHealth, new Rectangle(200, 10, 300, 42), Color.White);
+                }
+
                 // Rectangle for the menu
                 spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 4, GraphicsDevice.Viewport.Height / 6, 500, 500), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "PAUSE", new Vector2(425, 150), Color.White);
