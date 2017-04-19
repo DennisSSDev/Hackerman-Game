@@ -259,7 +259,7 @@ namespace Hackerman
                 _arrow.X-=10;
                 if (backMove != new Vector2(-5, 0))
                 {
-                    //box.X -= 5;
+                    box.X -= 5;
                     backMove += new Vector2(-5, 0);
                     return;
                 }
@@ -269,7 +269,7 @@ namespace Hackerman
                 _arrow.X +=10;
                 if(backMove != new Vector2(-15, 0))
                 {
-                    //box.X += 5;
+                    box.X += 5;
                     backMove -= new Vector2(-5, 0);
                     return;
                 }
@@ -279,7 +279,7 @@ namespace Hackerman
                 _arrow.Y -= 10;
                 if (backMove != new Vector2(0, -5))
                 {
-                    //box.Y -= 5;
+                    box.Y -= 5;
                     backMove += new Vector2(0, -5);
                     return;
                 }
@@ -289,7 +289,7 @@ namespace Hackerman
                 _arrow.Y += 10;
                 if (backMove != new Vector2(0, 5))
                 {
-                    //box.Y += 5;
+                    box.Y += 5;
                     backMove += new Vector2(0, 5);
                     return;
                 }
@@ -349,7 +349,7 @@ namespace Hackerman
         private void OnTimeEventForCoolDown(object source, ElapsedEventArgs e)
         {
             shotCoolDown = 0;
-            allowedShot = false;
+            allowedShot = true;
             aTimerForCoolDown.Stop();
         }
         private void OnTimeEventForEnemyAttack(object source, ElapsedEventArgs e)
@@ -427,10 +427,12 @@ namespace Hackerman
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
             hackSprite = Content.Load<Texture2D>("HackSprite");
-            //coolDownStart = Content.Load<Texture2D>("CooldownStart");
-            //coolDownOne = Content.Load<Texture2D>("CooldownOne");
-            //coolDownTwo = Content.Load<Texture2D>("CooldownTwo");
-            //coolDownDone = Content.Load<Texture2D>("CooldownDone");
+            /* For some reason the cooldowns didn't get through
+            coolDownStart = Content.Load<Texture2D>("CooldownStart");
+            coolDownOne = Content.Load<Texture2D>("CooldownOne");
+            coolDownTwo = Content.Load<Texture2D>("CooldownTwo");
+            coolDownDone = Content.Load<Texture2D>("CooldownDone");
+            */
             //hackSpritesheet = Content.Load<Texture2D>("HackSpriteSheet");
 
             // Music and sound
@@ -603,12 +605,12 @@ namespace Hackerman
                 if (playPressed == true)
                 {
                     cState = GameState.Game;
-                    mSound.Play();
+                    //mSound.Play();
                 }
                 else if(helpPressed == true)
                 {
                     cState = GameState.Help;
-                    mSound.Play();
+                    //mSound.Play();
 
                 }
                 else if(exitPressed == true)
@@ -618,7 +620,7 @@ namespace Hackerman
                 else if(editPressed == true)
                 {
                     cState = GameState.Edit;
-                    mSound.Play();
+                    //mSound.Play();
                 }
             }
 
@@ -961,11 +963,11 @@ namespace Hackerman
                     spriteBatch.Draw(noHealth, new Rectangle(200, 10, 300, 42), Color.White);
                 }
 
-                // Cooldown bar 
-                //if(aTimerForCoolDown.Enabled == true)
-               // {
-                 //   spriteBatch.Draw(coolDownStart, new Vector2(0, 0), Color.White);
-                //}
+                /* Cooldown bar 
+                if(aTimerForCoolDown.Enabled == true)
+                {
+                    spriteBatch.Draw(coolDownStart, new Vector2(0, 0), Color.White);
+                }*/
             }
 
             if(cState == GameState.GameOver)
