@@ -429,12 +429,12 @@ namespace Hackerman
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
             hackSprite = Content.Load<Texture2D>("HackSprite");
-            /* For some reason the cooldowns didn't get through
+            // For some reason the cooldowns didn't get through
             coolDownStart = Content.Load<Texture2D>("CooldownStart");
             coolDownOne = Content.Load<Texture2D>("CooldownOne");
             coolDownTwo = Content.Load<Texture2D>("CooldownTwo");
             coolDownDone = Content.Load<Texture2D>("CooldownDone");
-            */
+            
             //hackSpritesheet = Content.Load<Texture2D>("HackSpriteSheet");
 
             // Music and sound
@@ -1005,11 +1005,11 @@ namespace Hackerman
                     spriteBatch.Draw(noHealth, new Rectangle(200, 10, 300, 42), Color.White);
                 }
 
-                /* Cooldown bar 
-                if(aTimerForCoolDown.Enabled == true)
+                // Cooldown bar 
+                if(allowedShot == true)
                 {
-                    spriteBatch.Draw(coolDownStart, new Vector2(0, 0), Color.White);
-                }*/
+                    spriteBatch.Draw(coolDownStart, new Rectangle(20,100, 200, 200), Color.White);
+                }
             }
 
             if(cState == GameState.GameOver)
