@@ -721,7 +721,7 @@ namespace Hackerman
                 }
 
                 forLeftClickcur = Mouse.GetState();
-                if (forLeftClickcur.LeftButton == ButtonState.Pressed && forLeftClickprev.LeftButton == ButtonState.Pressed)
+                if (forLeftClickcur.LeftButton == ButtonState.Pressed && forLeftClickprev.LeftButton != ButtonState.Pressed)
                 {
                     
                     if (shotCoolDown == 50)
