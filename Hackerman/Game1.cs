@@ -153,22 +153,22 @@ namespace Hackerman
                 int sideSetter = xANDySetter.Next(0, 4);
                 if(sideSetter == 0)//TOP OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), 0, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), -15, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 1)//LEFT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(0, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(-15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 2)//BUTTOM OF THE BOX 
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height+15, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 3)//RIGHT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width+15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else
@@ -417,7 +417,7 @@ namespace Hackerman
             controlFont = Content.Load<SpriteFont>("Controls");
 
             // Textures
-            boxForBox = Content.Load<Texture2D>("HackTemp");
+            boxForBox = Content.Load<Texture2D>("BoxForEnemies");
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("BugWhite");
             laserTex = Content.Load<Texture2D>("Projectile");
@@ -520,6 +520,11 @@ namespace Hackerman
         {
             for (int i = b; i < incomingEnemies.Count; i++)//Need to loop through all the members of the list but not come back to them, as you don't want to start the timer twice
             {
+                if (i < 0)
+                {
+                    i++;
+                    break;
+                }
                 if (incomingEnemies[i].AllowedMovement == false)
                 {
                     if (allowedMOvement)
@@ -822,12 +827,13 @@ namespace Hackerman
                     {
                         if (incomingEnemies[i].CheckForDeath(item))
                         {
+                            b--;
                             incomingEnemies[i].Strength = 0;
                             incomingEnemies[i].Speed = 0;
                             incomingEnemies[i].X = 10000;
                             delEnemies.Add(incomingEnemies[i]);
                             item.Visible = false;
-                            b--;
+                            
                             score++;
                         }
                     }
