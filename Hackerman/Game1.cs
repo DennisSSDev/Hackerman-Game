@@ -255,7 +255,7 @@ namespace Hackerman
         
         public void ScreenWarp()
         {
-            if (_arrow.X >= GraphicsDevice.Viewport.Width-50)//Might not work since checking for screen width
+            if (_arrow.X >= GraphicsDevice.Viewport.Width-75)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
                 if (backMove.X != -350)
@@ -265,7 +265,7 @@ namespace Hackerman
                     return;
                 }
             }
-            else if (_arrow.X <= 50)
+            else if (_arrow.X <= 75)
             {
                 _arrow.X +=10;
                 if(backMove.X != 350)
@@ -275,7 +275,7 @@ namespace Hackerman
                     return;
                 }
             }
-            else if (_arrow.Y >= GraphicsDevice.Viewport.Height-50)
+            else if (_arrow.Y >= GraphicsDevice.Viewport.Height-75)
             {
                 _arrow.Y -= 10;
                 if (backMove.Y != -300)
@@ -285,7 +285,7 @@ namespace Hackerman
                     return;
                 }
             }
-            else if (_arrow.Y <= 50)
+            else if (_arrow.Y <= 75)
             {
                 _arrow.Y += 10;
                 if (backMove.Y != 300)
