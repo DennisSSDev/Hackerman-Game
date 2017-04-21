@@ -966,7 +966,7 @@ namespace Hackerman
                 spriteBatch.DrawString(controlFont, "Aim: Move mouse", new Vector2(150, 350), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Pause: 'P'", new Vector2(150, 400), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Turn up volume: -> Turn down volume: <-", new Vector2(150, 450), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "Mwaute: 'N' Unmute: 'U'", new Vector2(150, 500), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Mute: 'N' Unmute: 'U'", new Vector2(150, 500), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
             }
 
