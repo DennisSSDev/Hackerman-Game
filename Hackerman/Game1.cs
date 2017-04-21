@@ -979,6 +979,7 @@ namespace Hackerman
                 spriteBatch.Draw(background, backMove, scale: new Vector2(1f));
                 spriteBatch.DrawString(controlFont, "Score: "+ String.Format("{0:0}", score), new Vector2(875f, 5f), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.5f, SpriteEffects.None, 0f);
                 spriteBatch.DrawString(controlFont, string.Format("Round: {0}", round), new Vector2(875, 590), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.5f, SpriteEffects.None, 0f);
+
                 if (fileExists == true)
                 {
                     box.Draw(spriteBatch, gameTime);
@@ -1022,9 +1023,17 @@ namespace Hackerman
                 }
 
                 // Cooldown bar 
-                if(allowedShot == true)
+                if(allowedShot != true)
                 {
-                    spriteBatch.Draw(coolDownStart, new Rectangle(20,100, 200, 200), Color.White);
+                    if(shotCoolDown != 0)
+                        spriteBatch.Draw(coolDownStart, new Rectangle(100,600, 250, 40), Color.White);
+                    spriteBatch.DrawString(controlFont, "Reloading...", new Vector2(125, 600), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.15f, SpriteEffects.None, 0f);
+                    /*else if(intTimer == 1)
+                        spriteBatch.Draw(coolDownOne, new Rectangle(100, 600, 250, 40), Color.White);
+                    else if(intTimer == 2)
+                        spriteBatch.Draw(coolDownTwo, new Rectangle(100, 600, 250, 40), Color.White);
+                    else if(intTimer == 2.7)
+                        spriteBatch.Draw(coolDownDone, new Rectangle(100, 600, 250, 40), Color.White);*/
                 }
             }
 
