@@ -8,7 +8,6 @@ namespace Hackerman
 {
     interface IPlayer
     {
-        void Collision(IEnemy enemy, IMoveableObj walls);
         void Move();
         void Kill(IEnemy enemy);
         int Health { get; set; }

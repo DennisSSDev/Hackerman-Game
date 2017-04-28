@@ -46,11 +46,6 @@ namespace Hackerman
             throw new NotImplementedException();
         }
 
-        public void Collision(IEnemy enemy, IMoveableObj walls)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Kill(IEnemy enemy)
         {
             throw new NotImplementedException();

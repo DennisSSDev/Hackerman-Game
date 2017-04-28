@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Hackerman
 {//Dennis Made this
@@ -97,13 +98,49 @@ namespace Hackerman
         }
         public void RotateForPlayer(Player obj)
         {
-            if(this.X>obj.X && this.Y < obj.Y)
+            if(this.X==obj.X && this.Y < obj.Y)
             {
-                double opposite = this.Y - obj.Y;
-                double adjacent = this.X - obj.X;
-                double tangent = Math.Tan(opposite / adjacent);
-                this.Rotation -= (float)tangent;
+                this.Rotation = MathHelper.Pi;
             }
+            else if(this.X == obj.X && this.Y > obj.Y)
+            {
+                Rotation = 0;
+            }
+            else if (this.X < obj.X && this.Y == obj.Y)
+            {
+               
+                this.Rotation = -MathHelper.PiOver2;
+            }
+            else if (this.X > obj.X && this.Y == obj.Y)
+            {
+
+                this.Rotation = MathHelper.PiOver2;
+            }
+            else
+            {
+                double opposite = Math.Abs((this.Y - obj.Y));
+                double adjacent = Math.Abs(this.X - obj.X);
+                double tangent = Math.Tan(opposite / adjacent);
+                if(obj.X > this.X && obj.Y > this.Y)
+                {
+                    this.Rotation = MathHelper.PiOver2 + (float)tangent;
+                }
+                else if(obj.X > this.X && obj.Y < this.Y)
+                {
+                    this.Rotation = MathHelper.PiOver2 - (float)tangent;
+                }
+                else if(obj.X < this.X && obj.Y > this.Y)
+                {
+                    this.Rotation = -(MathHelper.PiOver2 + (float)tangent);
+                }
+                else
+                {
+                    this.Rotation =  -(float)tangent;
+
+                }
+                
+            }
+            Debug.WriteLine(MathHelper.ToDegrees(Rotation)+ " "+ this.X + " "+  this.Y + " " + obj.X + " " + obj.Y);
         }
         public void FacePlayer(Player obj)
         {

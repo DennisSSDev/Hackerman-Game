@@ -27,6 +27,11 @@ namespace Hackerman
     };
     public class Game1 : Game
     {
+        /// <summary>
+        /// Implement health pack witha randomness set to each round 
+        /// add the trig to enemy rotation 
+        /// 
+        /// </summary>
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         
@@ -148,7 +153,7 @@ namespace Hackerman
         {
             Random speedSetter = new Random();
             Random xANDySetter = new Random();
-            for (int i = 0; i < round * 2 + 1; i++)
+            for (int i = 0; i < 2; i++)
             {
                 int sideSetter = xANDySetter.Next(0, 4);
                 if(sideSetter == 0)//TOP OF THE BOX
@@ -530,6 +535,7 @@ namespace Hackerman
                     if (allowedMOvement)
                     {
                         incomingEnemies[i].AllowedMovement = true;
+                        incomingEnemies[i].RotateForPlayer(_arrow);
                         b++;
                         continuation = true;
                         allowedMOvement = false;
@@ -974,7 +980,7 @@ namespace Hackerman
             {
                 for (int i = 0; i < incomingEnemies.Count; i++)//needs a fix, first they need to face the player, then they should be drawn with a dfferent persepctive
                 {
-                    incomingEnemies[i].FacePlayer(_arrow);
+                    //incomingEnemies[i].FacePlayer(_arrow);
                 }
                 spriteBatch.Draw(background, backMove, scale: new Vector2(1f));
                 spriteBatch.DrawString(controlFont, "Score: "+ String.Format("{0:0}", score), new Vector2(875f, 5f), Color.LimeGreen, 0f, new Vector2(1f, 1f), 1.5f, SpriteEffects.None, 0f);
