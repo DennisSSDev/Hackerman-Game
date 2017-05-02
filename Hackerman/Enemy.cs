@@ -100,7 +100,7 @@ namespace Hackerman
         {
             if(this.X==obj.X && this.Y < obj.Y)
             {
-                this.Rotation = MathHelper.Pi;
+                this.Rotation = -MathHelper.PiOver2;
             }
             else if(this.X == obj.X && this.Y > obj.Y)
             {
@@ -108,13 +108,12 @@ namespace Hackerman
             }
             else if (this.X < obj.X && this.Y == obj.Y)
             {
-               
-                this.Rotation = -MathHelper.PiOver2;
+                this.Rotation = -MathHelper.Pi;
             }
             else if (this.X > obj.X && this.Y == obj.Y)
             {
 
-                this.Rotation = MathHelper.PiOver2;
+                this.Rotation = MathHelper.Pi;
             }
             else
             {
@@ -133,6 +132,11 @@ namespace Hackerman
                 {
                     this.Rotation = -(MathHelper.PiOver2 + (float)tangent);
                 }
+                else if(obj.X < this.X && obj.Y < this.Y)
+                {
+                    this.Rotation = -MathHelper.PiOver2 + (float)tangent;
+
+                }
                 else
                 {
                     this.Rotation =  -(float)tangent;
@@ -140,14 +144,17 @@ namespace Hackerman
                 }
                 
             }
-            Debug.WriteLine(MathHelper.ToDegrees(Rotation)+ " "+ this.X + " "+  this.Y + " " + obj.X + " " + obj.Y);
+            //Debug.WriteLine(MathHelper.ToDegrees(Rotation)+ " "+ this.X + " "+  this.Y + " " + obj.X + " " + obj.Y);
         }
         public void FacePlayer(Player obj)
         {
             int dPosX = this.X - obj.X;
             int dPosY = this.Y - obj.Y;
+            
+            
             //find the top left corner of the rectangle to set an initial rotation of the enemy towards the player( might want to do this in the constructor) 
-            this.Rotation = (float)Math.Atan2(dPosY, dPosX);
+            
+            this.Rotation += (float)Math.Atan2(dPosY, dPosX);
         }
         public void ColissionSpawn(Enemy obj)//this method should only be used for spawning 
         {

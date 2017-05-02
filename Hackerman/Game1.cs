@@ -153,27 +153,66 @@ namespace Hackerman
         {
             Random speedSetter = new Random();
             Random xANDySetter = new Random();
-            for (int i = 0; i < 2; i++)
+            Random colorizer = new Random();
+            int store = 0;
+            for (int i = 0; i < 1 + round*3; i++)
             {
+                store = colorizer.Next(0, 10);
+                Color storingColor = Color.Aqua;
+                switch (store)
+                {
+                    case 0:
+                        storingColor = Color.Red;
+                        break;
+                    case 1:
+                        storingColor = Color.Orange;
+                        break;
+                    case 2:
+                        storingColor = Color.Yellow;
+                        break;
+                    case 3:
+                        storingColor = Color.LimeGreen;
+                        break;
+                    case 4:
+                        storingColor = Color.Blue;
+                        break;
+                    case 5:
+                        storingColor = Color.Violet;
+                        break;
+                    case 6:
+                        storingColor = Color.LightGray;
+                        break;
+                    case 7:
+                        storingColor = Color.White;
+                        break;
+                    case 8:
+                        storingColor = Color.Khaki;
+                        break;
+                    case 9:
+                        storingColor = Color.Gainsboro;
+                        break;
+                    default:
+                        break;
+                }
                 int sideSetter = xANDySetter.Next(0, 4);
                 if(sideSetter == 0)//TOP OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), -15, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), -15, 100, 100, 0,0, MathHelper.PiOver2, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 1)//LEFT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(-15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(-15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 2)//BUTTOM OF THE BOX 
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height+15, 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height+15, 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 3)//RIGHT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width+15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0f, 5f, Color.White, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width+15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else
@@ -682,6 +721,7 @@ namespace Hackerman
             else if (cState == GameState.Game)
             {
                 
+                
                 if (incomingEnemies.Count <= 0)
                 {
                     b = 0;
@@ -771,7 +811,7 @@ namespace Hackerman
                 _dot.Y = (int)mousePosition.Y;
                 
                 PlayerControls();
-
+                
                 ScreenWarp();
 
                 SetMovement();
