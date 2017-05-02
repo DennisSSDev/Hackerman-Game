@@ -21,7 +21,8 @@ namespace Hackerman
         Help, 
         GameOver,
         Pause,
-        Exit
+        Exit,
+        Between
         // Just need a state for the game itself, 
         // not for individual 
     };
@@ -260,44 +261,56 @@ namespace Hackerman
         
         public void ScreenWarp()
         {
-            if (_arrow.X >= GraphicsDevice.Viewport.Width-75)//Might not work since checking for screen width
+            if (_arrow.X >= GraphicsDevice.Viewport.Width-150)//Might not work since checking for screen width
             {
                 _arrow.X-=10;
                 if (backMove.X != -350)
                 {
-                    box.X -= 5;
-                    backMove.X -= 5;
-                    return;
+                    if(box != null)
+                    {
+                        box.X -= 5;
+                        backMove.X -= 5;
+                        return;
+                    }
                 }
             }
-            else if (_arrow.X <= 75)
+            else if (_arrow.X <= 150)
             {
                 _arrow.X +=10;
                 if(backMove.X != 350)
                 {
-                    box.X += 5;
-                    backMove.X += 5;
-                    return;
+                    if(box != null)
+                    {
+                        box.X += 5;
+                        backMove.X += 5;
+                        return;
+                    }
                 }
             }
-            else if (_arrow.Y >= GraphicsDevice.Viewport.Height-75)
+            else if (_arrow.Y >= GraphicsDevice.Viewport.Height-150)
             {
                 _arrow.Y -= 10;
                 if (backMove.Y != -300)
                 {
-                    box.Y -= 5;
-                    backMove.Y -= 5;
-                    return;
+                    if(box != null)
+                    {
+                        box.Y -= 5;
+                        backMove.Y -= 5;
+                        return;
+                    }
                 }
             }
-            else if (_arrow.Y <= 75)
+            else if (_arrow.Y <= 150)
             {
                 _arrow.Y += 10;
                 if (backMove.Y != 300)
                 {
-                    box.Y += 5;
-                    backMove.Y += 5;
-                    return;
+                    if(box != null)
+                    {
+                        box.Y += 5;
+                        backMove.Y += 5;
+                        return;
+                    }
                 }
             }
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height - 50 && _arrow.X >= GraphicsDevice.Viewport.Width - 50 && Keyboard.GetState().IsKeyDown(Keys.D)
@@ -310,8 +323,7 @@ namespace Hackerman
 
         // Creating clickable areas in each rectangle 
         public bool Click(Rectangle r, Vector2 st)
-        {
-            
+        { 
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 if (r.Contains(st))
@@ -498,7 +510,7 @@ namespace Hackerman
             newLaser = new Laser(_arrow.X, _arrow.Y, 100, 50, 0, 0, 0f, 1f, Color.White);
             if (fileExists != false)
             {
-                box = new Sprite(coordinateXcomponent, coordinateYcomponent, 200, 200, 0,
+                box = new Sprite(coordinateXcomponent, coordinateYcomponent, 100, 100, 0,
                 0, 0f, 1f, Color.White);
                 box.Texture = boxForBox;
             }
@@ -659,7 +671,7 @@ namespace Hackerman
                 // Menu state transitions
                 if (playPressed == true)
                 {
-                    cState = GameState.Game;
+                    cState = GameState.Between;
                     mSound.Play();
                 }
                 else if(helpPressed == true)
@@ -910,6 +922,13 @@ namespace Hackerman
                     cState = GameState.Menu;
                 }
             }
+            else if(cState == GameState.Between)
+            {
+                if(SingleKeyPress(Keys.Enter))
+                {
+                    cState = GameState.Game;
+                }
+            }
 
             else if(cState == GameState.Exit)
             {
@@ -958,6 +977,14 @@ namespace Hackerman
                 spriteBatch.Draw(playBtn, play, Color.White);
                 spriteBatch.Draw(title, hack, Color.White);
                 _dot.Draw(spriteBatch, gameTime);
+            }
+
+            if(cState == GameState.Between)
+            {
+                spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 525, 450), Color.Black * .8f);
+                spriteBatch.DrawString(controlFont, "Destroy the bugs in your code!", new Vector2(170, 330), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Press enter to play", new Vector2(230, 420), Color.LimeGreen);
             }
 
             if (cState == GameState.Help)
