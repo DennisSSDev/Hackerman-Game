@@ -59,6 +59,7 @@ namespace Hackerman
         Texture2D coolDownTwo;
         Texture2D coolDownOne;
         Texture2D coolDownDone;
+        Texture2D medkit;
         //Texture2D hackSpritesheet;
 
         // Font textures;
@@ -95,6 +96,7 @@ namespace Hackerman
 
 
         Sprite _dot;
+        Sprite medKit;
         Sprite box;
         MouseState state;
         Player _arrow;
@@ -121,6 +123,7 @@ namespace Hackerman
         bool allowedMoveAfterSpawn = false;
         System.Timers.Timer aTimerForAttackingPlayer = new System.Timers.Timer();
         System.Timers.Timer timerForIndividualSpawn = new System.Timers.Timer();
+        System.Timers.Timer timerForMedkitSpawn = new System.Timers.Timer();
         int allower = 0;
         int b = 0;
         bool continuation = true;
@@ -128,7 +131,10 @@ namespace Hackerman
         int addedLasers = -1;
         MouseState forLeftClickcur;
         MouseState forLeftClickprev;
-
+        Random randomizer = new Random();
+        bool visibleMedkit = false;
+        int total = 500;
+        int playerHealth = 3;
 
         Enemy blank = new Enemy();
         Thread timerThread;
@@ -198,22 +204,22 @@ namespace Hackerman
                 int sideSetter = xANDySetter.Next(0, 4);
                 if(sideSetter == 0)//TOP OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), -15, 100, 100, 0,0, MathHelper.PiOver2, 5f, storingColor, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0, 1151), -75, 100, 100, 0,0, MathHelper.PiOver2, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 1)//LEFT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(-15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(-75, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 2)//BUTTOM OF THE BOX 
                 {
-                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height+15, 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(xANDySetter.Next(0,1151), GraphicsDevice.Viewport.Height+75, 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else if(sideSetter == 3)//RIGHT SIDE OF THE BOX
                 {
-                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width+15, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
+                    incomingEnemies.Add(new Enemy(GraphicsDevice.Viewport.Width+75, xANDySetter.Next(0, 649), 100, 100, 0, 0, 0, 5f, storingColor, speedSetter.Next(1, 4)));
                     blank.EnemyCount++;
                 }
                 else
@@ -223,7 +229,7 @@ namespace Hackerman
             }
             /*for (int i = 0; i < incomingEnemies.Count; i++)
             {
-                for (int j = 1; j < incomingEnemies.Count; j++)
+                for (int j = 1;s j < incomingEnemies.Count; j++)
                 {
                     incomingEnemies[i].ColissionSpawn(incomingEnemies[j]);
                 }
@@ -305,6 +311,7 @@ namespace Hackerman
                 _arrow.X-=10;
                 if (backMove.X != -350)
                 {
+                    medKit.X -= 10;
                     if(box != null)
                     {
                         box.X -= 5;
@@ -316,6 +323,7 @@ namespace Hackerman
             else if (_arrow.X <= 150)
             {
                 _arrow.X +=10;
+                medKit.X += 10;
                 if(backMove.X != 350)
                 {
                     if(box != null)
@@ -329,6 +337,7 @@ namespace Hackerman
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height-150)
             {
                 _arrow.Y -= 10;
+                medKit.Y -= 10;
                 if (backMove.Y != -300)
                 {
                     if(box != null)
@@ -342,6 +351,7 @@ namespace Hackerman
             else if (_arrow.Y <= 150)
             {
                 _arrow.Y += 10;
+                medKit.Y += 10;
                 if (backMove.Y != 300)
                 {
                     if(box != null)
@@ -420,7 +430,37 @@ namespace Hackerman
         private void OnTimeEventForIndividualSpawn(object source, ElapsedEventArgs e)
         {
             allowedMOvement = true;
-            aTimerForAttackingPlayer.Stop();
+            timerForIndividualSpawn.Stop();//pls don't switch this anymore, was looking for this bug for ages
+        }
+
+        private void OnTimeEventForGivingHealth(object source, ElapsedEventArgs e)
+        {
+            int hit = 132;
+            total -= (int)timerForMedkitSpawn.Interval;
+            if (total < hit)
+            {
+                total = 500;
+            }
+            if (playerHealth+1 == 3)
+            {
+                int collect = randomizer.Next(0, total);
+                if (collect == hit)
+                {
+                    medKit.X = randomizer.Next(25, GraphicsDevice.Viewport.Width - 125);
+                    medKit.Y = randomizer.Next(25, GraphicsDevice.Viewport.Height - 125);
+                    visibleMedkit = true;
+                    total = 500-collect;
+                }
+            }
+            if(playerHealth +2 == 3)
+            {
+                int ran1 = randomizer.Next(0, 10);
+                int ran2 = randomizer.Next(0, 10);
+                if (ran1 == ran2)
+                {
+                    visibleMedkit = true;
+                }
+            }
         }
 
         /// <summary>
@@ -467,6 +507,10 @@ namespace Hackerman
             timerForIndividualSpawn.Interval = 100;
             timerForIndividualSpawn.Enabled = true;
 
+            timerForMedkitSpawn.Elapsed += new ElapsedEventHandler(OnTimeEventForGivingHealth);
+            timerForMedkitSpawn.Interval = 100;
+            timerForMedkitSpawn.Enabled = true;
+
             // Fonts
             playerScore = Content.Load<SpriteFont>("Score");
             menuFont = Content.Load<SpriteFont>("menuFont");
@@ -476,6 +520,7 @@ namespace Hackerman
             boxForBox = Content.Load<Texture2D>("BoxForEnemies");
             dot = Content.Load<Texture2D>("Crosshair");
             enemyTex = Content.Load<Texture2D>("BugWhite");
+            medkit = Content.Load<Texture2D>("medkit");
             laserTex = Content.Load<Texture2D>("Projectile");
             background = Content.Load<Texture2D>("HackLvl2");
             menuRectangle = Content.Load<Texture2D>("rectangle");
@@ -536,7 +581,10 @@ namespace Hackerman
                 
             }
 
-            
+            medKit = new Sprite(1000000, 
+                10000000,
+                50, 50, 0, 0, 0f, 1f, Color.White);
+            medKit.Texture = medkit;
 
             _dot = new Sprite(300, 400, 50, 50, 300, 400, 0f, 0.3f, Color.White)
             {
@@ -569,6 +617,7 @@ namespace Hackerman
             newLaser.Texture = laserTex;
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            playerHealth = _arrow.Health;
 
             //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
@@ -732,10 +781,12 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
-                
-                
+                playerHealth = _arrow.Health;
+                timerForMedkitSpawn.Start();
+
                 if (incomingEnemies.Count <= 0)
                 {
+                    
                     b = 0;
                     counterPerSpawn = 0;
                     aTimer.Start();
@@ -1073,6 +1124,17 @@ namespace Hackerman
                         item.Draw(spriteBatch, gameTime);
                     }
 
+                }
+                if (_arrow.Position.Intersects(medKit.Position))
+                {
+                    _arrow.Health++;
+                    visibleMedkit = false;
+                    medKit.X = 100000000;
+                    medKit.Y = 100000000;
+                }
+                if(visibleMedkit == true)
+                {
+                    medKit.Draw(spriteBatch, gameTime);
                 }
 
                 // Health bar
