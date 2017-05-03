@@ -929,6 +929,10 @@ namespace Hackerman
 
                         }
                     }
+                foreach (var item in incomingEnemies)
+                {
+                    item.RotateForPlayer(_arrow);
+                }
                 
                 for (int i = 0; i < incomingEnemies.Count; i++)//this list should be used to find out who died, ocne found, go back up or right after 
                 {

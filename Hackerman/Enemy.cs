@@ -97,60 +97,72 @@ namespace Hackerman
             if(this.X==obj.X && this.Y < obj.Y)
             {
                 this.Rotation = -MathHelper.PiOver2;
+                Debug.WriteLine("first");
             }
             else if(this.X == obj.X && this.Y > obj.Y)
             {
                 Rotation = 0;
+                Debug.WriteLine("second");
             }
             else if (this.X < obj.X && this.Y == obj.Y)
             {
                 this.Rotation = -MathHelper.Pi;
+                Debug.WriteLine("3");
             }
             else if (this.X > obj.X && this.Y == obj.Y)
             {
 
                 this.Rotation = MathHelper.Pi;
+                Debug.WriteLine("4");
             }
             else
             {
                 double opposite = Math.Abs((this.Y - obj.Y));
                 double adjacent = Math.Abs(this.X - obj.X);
-                double tangent = Math.Tan(opposite / adjacent);
+                double tangent = Math.Atan(opposite / adjacent);
                 if(obj.X > this.X && obj.Y > this.Y)
                 {
                     this.Rotation = MathHelper.PiOver2 + (float)tangent;
+                    Debug.WriteLine("5");
                 }
                 else if(obj.X > this.X && obj.Y < this.Y)
                 {
                     this.Rotation = MathHelper.PiOver2 - (float)tangent;
+                    Debug.WriteLine("6");
                 }
                 else if(obj.X < this.X && obj.Y > this.Y)
                 {
                     this.Rotation = -(MathHelper.PiOver2 + (float)tangent);
+                    Debug.WriteLine("7");
                 }
                 else if(obj.X < this.X && obj.Y < this.Y)
                 {
                     this.Rotation = -MathHelper.PiOver2 + (float)tangent;
+                    Debug.WriteLine("8");
 
                 }
                 else
                 {
                     this.Rotation =  -(float)tangent;
-
+                    Debug.WriteLine("9");
                 }
                 
             }
-            //Debug.WriteLine(MathHelper.ToDegrees(Rotation)+ " "+ this.X + " "+  this.Y + " " + obj.X + " " + obj.Y);
+            Debug.WriteLine(MathHelper.ToDegrees(Rotation)+ " "+ this.X + " "+  this.Y + " " + obj.X + " " + obj.Y);
         }
         public void FacePlayer(Player obj)
         {
-            int dPosX = this.X - obj.X;
-            int dPosY = this.Y - obj.Y;
-            
-            
+            // int dPosX = this.X - obj.X;
+            //int dPosY = this.Y - obj.Y;
+
+
             //find the top left corner of the rectangle to set an initial rotation of the enemy towards the player( might want to do this in the constructor) 
-            
-            this.Rotation += (float)Math.Atan2(dPosY, dPosX);
+
+            //this.Rotation = (float)Math.Atan2(dPosY, dPosX);
+            double opposite = Math.Abs((this.Y - obj.Y));
+            double adjacent = Math.Abs(this.X - obj.X);
+            double tangent = Math.Tan(opposite / adjacent);
+            this.Rotation = (float)tangent;
         }
         public void ColissionSpawn(Enemy obj)//this method should only be used for spawning 
         {
