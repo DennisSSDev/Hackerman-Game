@@ -60,6 +60,8 @@ namespace Hackerman
         Texture2D coolDownOne;
         Texture2D coolDownDone;
         Texture2D medkit;
+        Texture2D bombTex;
+        Texture2D explosion;
         //Texture2D hackSpritesheet;
 
         // Font textures;
@@ -93,14 +95,15 @@ namespace Hackerman
 
         // Vector attribute for the background 
         Vector2 backMove = new Vector2(0,0);
-
-
+        Sprite explosioN;
+        Sprite bomb;
         Sprite _dot;
         Sprite medKit;
         Sprite box;
         MouseState state;
         Player _arrow;
         Laser newLaser;
+        Stack<Sprite> bombs = new Stack<Sprite>();
         List<Enemy> incomingEnemies = new List<Enemy>();
         List<Enemy> delEnemies = new List<Enemy>();
         List<Laser> laserShots = new List<Laser>();
@@ -121,9 +124,25 @@ namespace Hackerman
         bool allowedSpawn = false;
         bool allowedMOvement = false;
         bool allowedMoveAfterSpawn = false;
+
         System.Timers.Timer aTimerForAttackingPlayer = new System.Timers.Timer();
         System.Timers.Timer timerForIndividualSpawn = new System.Timers.Timer();
         System.Timers.Timer timerForMedkitSpawn = new System.Timers.Timer();
+        System.Timers.Timer timerFB = new System.Timers.Timer();
+
+        bool allower1 = false;
+        bool visibleBomb = false;
+        int oldRound = 0;
+        int newRound = 0;
+        int decider = 0;
+        int offset = 100;
+        bool visibleExplosion = false;
+        bool allowedExplosion = false;
+        int widthScalar = 0;
+        int hightScalar = 0;
+
+
+
         int allower = 0;
         int b = 0;
         bool continuation = true;
@@ -145,6 +164,8 @@ namespace Hackerman
         int round = 0;
         int difficulty = 1;
         int intTimer = 0;
+        int ran1 = 0;
+        int ran2 = 0;
         
         //probably want to add a list of enemies too when we get around making more then 1 (list because the majority would just be duplicates)
         public Game1()
@@ -433,10 +454,39 @@ namespace Hackerman
             timerForIndividualSpawn.Stop();//pls don't switch this anymore, was looking for this bug for ages
         }
 
+        private void OnTimeEventForFB(object source, ElapsedEventArgs e)
+        {
+            int key = 100;
+            if(newRound > oldRound)
+            {
+                decider = 0;
+                oldRound = newRound;
+            }
+            if (decider > 499)
+            {
+                decider = 0;
+            }
+            decider += 10;
+
+            int key2 = 50;
+            int ranHolder = randomizer.Next(0, 500-decider);
+            if(ranHolder== key)
+            {
+                allower1 = true;
+            }
+            if(allower1 == true)
+            {
+                visibleBomb = true;
+                allower1 = false;
+                bomb.X = randomizer.Next(50, GraphicsDevice.Viewport.Width - 125);
+                bomb.Y = randomizer.Next(50, GraphicsDevice.Viewport.Height - 125);
+            }
+            
+        }
         private void OnTimeEventForGivingHealth(object source, ElapsedEventArgs e)
         {
             int hit = 132;
-            total -= (int)timerForMedkitSpawn.Interval;
+            total -= 10;
             if (total < hit)
             {
                 total = 500;
@@ -444,18 +494,19 @@ namespace Hackerman
             if (playerHealth+1 == 3)
             {
                 int collect = randomizer.Next(0, total);
+                
                 if (collect == hit)
                 {
-                    medKit.X = randomizer.Next(25, GraphicsDevice.Viewport.Width - 125);
-                    medKit.Y = randomizer.Next(25, GraphicsDevice.Viewport.Height - 125);
+                    medKit.X = randomizer.Next(50, GraphicsDevice.Viewport.Width - 125);
+                    medKit.Y = randomizer.Next(50, GraphicsDevice.Viewport.Height - 125);
                     visibleMedkit = true;
                     total = 500-collect;
                 }
             }
             if(playerHealth +2 == 3)
             {
-                int ran1 = randomizer.Next(0, 10);
-                int ran2 = randomizer.Next(0, 10);
+                ran1 = randomizer.Next(0, 5);
+                ran2 = randomizer.Next(0, 5);
                 if (ran1 == ran2)
                 {
                     visibleMedkit = true;
@@ -511,6 +562,10 @@ namespace Hackerman
             timerForMedkitSpawn.Interval = 100;
             timerForMedkitSpawn.Enabled = true;
 
+            timerFB.Elapsed += new ElapsedEventHandler(OnTimeEventForFB);
+            timerFB.Interval = 100;
+            timerFB.Enabled = true;
+
             // Fonts
             playerScore = Content.Load<SpriteFont>("Score");
             menuFont = Content.Load<SpriteFont>("menuFont");
@@ -534,6 +589,9 @@ namespace Hackerman
             coolDownOne = Content.Load<Texture2D>("CooldownOne");
             coolDownTwo = Content.Load<Texture2D>("CooldownTwo");
             coolDownDone = Content.Load<Texture2D>("CooldownDone");
+            bombTex = Content.Load<Texture2D>("bomb");
+            explosion = Content.Load<Texture2D>("explosion");
+
             
             //hackSpritesheet = Content.Load<Texture2D>("HackSpriteSheet");
 
@@ -580,7 +638,11 @@ namespace Hackerman
                 }
                 
             }
-
+             explosioN = new Sprite(-10000, -1000, 10, 10, 0, 0, 0, 1f, Color.White);
+            explosioN.Texture = explosion;
+            bomb = new Sprite(100000,
+                100000000,
+                100, 100, 0, 0, 0f, 1f, Color.White);
             medKit = new Sprite(1000000, 
                 10000000,
                 50, 50, 0, 0, 0f, 1f, Color.White);
@@ -601,7 +663,7 @@ namespace Hackerman
                 0, 0f, 1f, Color.White);
                 box.Texture = boxForBox;
             }
-
+            bomb.Texture = bombTex;
             _arrow.Texture = hackSprite;
             _dot.Texture = dot;
             //consider putting enemySpawn in the update method since you'd want to spawn new members upon next round
@@ -621,6 +683,24 @@ namespace Hackerman
 
             //You can't disregard transparent pixels, either create sprites without extra transparent space 
         }
+        public void Explosion()
+        {
+            if(explosioN.Position.Width > 150 && explosioN.Position.Height > 150)
+            {
+                allowedExplosion = false;
+                visibleExplosion = false;
+                Rectangle temp1 = new Rectangle(-10000, -1100, 10, 10);
+                explosioN.Position = temp1;
+                return;
+            }
+            widthScalar += 1;
+            hightScalar += 1;
+            Rectangle temp = new Rectangle(explosioN.X, explosioN.Y, widthScalar, hightScalar);
+            explosioN.Position = temp;
+
+            visibleExplosion = true;
+        }
+
         public void SetMovement()
         {
             for (int i = b; i < incomingEnemies.Count; i++)//Need to loop through all the members of the list but not come back to them, as you don't want to start the timer twice
@@ -781,12 +861,27 @@ namespace Hackerman
             // Game State 
             else if (cState == GameState.Game)
             {
+                if (SingleKeyPress(Keys.R))
+                {
+                    if (bombs.Count > 0)
+                    {
+                        allowedExplosion = true;
+                        explosioN.X = _arrow.X;
+                        explosioN.Y = _arrow.Y;
+                        bombs.Pop();
+                    }
+                }
+                if (allowedExplosion)
+                {
+                    Explosion();
+                }
+                
                 playerHealth = _arrow.Health;
                 timerForMedkitSpawn.Start();
 
                 if (incomingEnemies.Count <= 0)
                 {
-                    
+                    timerFB.Start();
                     b = 0;
                     counterPerSpawn = 0;
                     aTimer.Start();
@@ -796,6 +891,7 @@ namespace Hackerman
                         
                         aTimer.Stop();
                         round++;
+                        newRound = round;
                         intTimer = 0;
                         EnemySpawn();
                         for (int i = 0; i < incomingEnemies.Count; i++)
@@ -862,6 +958,19 @@ namespace Hackerman
                     {
                       item.Shoot(_arrow);
                         
+                    }
+                }
+                if (bomb.Position.Intersects(_arrow.Position))
+                {
+                    visibleBomb = false;
+                    bomb.Position = new Rectangle(10000, 100000, 50, 50);
+                    if(bombs.Count <= 6)
+                    {
+                        //50, 50, 0, 0, 0f, 1f, Color.White
+                        bombs.Push(new Sprite(GraphicsDevice.Viewport.Width - 250 - offset,
+                            GraphicsDevice.Viewport.Height - 50, 40, 40, 0, 0, 0f, 1f, Color.White));
+                        bombs.Peek().Texture = bombTex;
+                        offset += 50;
                     }
                 }
                 Vector2 mousePosition = new Vector2(state.X, state.Y);
@@ -938,7 +1047,7 @@ namespace Hackerman
                 {
                     foreach (var item in laserShots)
                     {
-                        if (incomingEnemies[i].CheckForDeath(item))
+                        if (incomingEnemies[i].CheckForDeath(item) )
                         {
                             b--;
                             incomingEnemies[i].Strength = 0;
@@ -949,6 +1058,16 @@ namespace Hackerman
                             
                             score++;
                         }
+                    }
+                    if (incomingEnemies[i].Position.Intersects(explosioN.Position))
+                    {
+                        b--;
+                        incomingEnemies[i].Strength = 0;
+                        incomingEnemies[i].Speed = 0;
+                        incomingEnemies[i].X = 10000;
+                        delEnemies.Add(incomingEnemies[i]);
+
+                        score++;
                     }
                 }
                 foreach (var item in delEnemies)
@@ -972,7 +1091,10 @@ namespace Hackerman
                 }
 
                 // Drawing Hackerman walking and standing.
-
+                if(incomingEnemies.Count == 0)
+                {
+                    timerFB.Stop();
+                }
             }
             
             else if (cState == GameState.GameOver)
@@ -1129,6 +1251,10 @@ namespace Hackerman
                     }
 
                 }
+                foreach (var item in bombs)
+                {
+                    item.Draw(spriteBatch, gameTime);
+                }
                 if (_arrow.Position.Intersects(medKit.Position))
                 {
                     _arrow.Health++;
@@ -1139,6 +1265,14 @@ namespace Hackerman
                 if(visibleMedkit == true)
                 {
                     medKit.Draw(spriteBatch, gameTime);
+                }
+                if(visibleExplosion == true)
+                {
+                    explosioN.Draw(spriteBatch, gameTime);
+                }
+                if(visibleBomb == true)
+                {
+                    bomb.Draw(spriteBatch, gameTime);
                 }
 
                 // Health bar
