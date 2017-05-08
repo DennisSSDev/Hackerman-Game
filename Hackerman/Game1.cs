@@ -12,7 +12,11 @@ using System.Timers;
 
 namespace Hackerman
 {//Collabarative work present from Alessandro, Anthony, Dennis
-    //add 2 more timers: one for the enemy spawning, so that they don't spawn all at the same time and another for the shots cooldown so that it won't be a bullet fest
+    //Optimize the shit out of the medkit and bomb timers
+    //Resize the explosion animation 
+    //Relocate the bombs list 
+    //fix the no move error 
+    //make the medkit aspawn more rare
     enum GameState
     {
         Game,
@@ -509,6 +513,8 @@ namespace Hackerman
                 ran2 = randomizer.Next(0, 5);
                 if (ran1 == ran2)
                 {
+                    medKit.X = randomizer.Next(50, GraphicsDevice.Viewport.Width - 125);
+                    medKit.Y = randomizer.Next(50, GraphicsDevice.Viewport.Height - 125);
                     visibleMedkit = true;
                 }
             }
