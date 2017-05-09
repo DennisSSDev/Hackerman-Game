@@ -336,7 +336,8 @@ namespace Hackerman
                 _arrow.X-=10;
                 if (backMove.X != -350)
                 {
-                    medKit.X -= 10;
+                    medKit.X -= 8;
+                    bomb.X -= 8;
                     if(box != null)
                     {
                         box.X -= 5;
@@ -348,7 +349,8 @@ namespace Hackerman
             else if (_arrow.X <= 150)
             {
                 _arrow.X +=10;
-                medKit.X += 10;
+                medKit.X += 8;
+                bomb.X += 8;
                 if(backMove.X != 350)
                 {
                     if(box != null)
@@ -362,7 +364,8 @@ namespace Hackerman
             else if (_arrow.Y >= GraphicsDevice.Viewport.Height-150)
             {
                 _arrow.Y -= 10;
-                medKit.Y -= 10;
+                medKit.Y -= 8;
+                bomb.Y-= 8;
                 if (backMove.Y != -300)
                 {
                     if(box != null)
@@ -376,7 +379,8 @@ namespace Hackerman
             else if (_arrow.Y <= 150)
             {
                 _arrow.Y += 10;
-                medKit.Y += 10;
+                medKit.Y += 8;
+                bomb.Y += 8;
                 if (backMove.Y != 300)
                 {
                     if(box != null)
@@ -482,8 +486,14 @@ namespace Hackerman
             {
                 visibleBomb = true;
                 allower1 = false;
-                bomb.X = randomizer.Next(50, GraphicsDevice.Viewport.Width - 125);
-                bomb.Y = randomizer.Next(50, GraphicsDevice.Viewport.Height - 125);
+                try
+                {
+                    bomb.X = randomizer.Next(50, GraphicsDevice.Viewport.Width - 125);
+                    bomb.Y = randomizer.Next(50, GraphicsDevice.Viewport.Height - 125);
+                }
+                catch (Exception)
+                {
+                }
             }
             
         }
@@ -691,16 +701,18 @@ namespace Hackerman
         }
         public void Explosion()
         {
-            if(explosioN.Position.Width > 150 && explosioN.Position.Height > 150)
+            if(explosioN.Position.Width > 400 && explosioN.Position.Height > 400)
             {
+                widthScalar = 0;
+                hightScalar = 0;
                 allowedExplosion = false;
                 visibleExplosion = false;
                 Rectangle temp1 = new Rectangle(-10000, -1100, 10, 10);
                 explosioN.Position = temp1;
                 return;
             }
-            widthScalar += 1;
-            hightScalar += 1;
+            widthScalar += 2;
+            hightScalar += 2;
             Rectangle temp = new Rectangle(explosioN.X, explosioN.Y, widthScalar, hightScalar);
             explosioN.Position = temp;
 
@@ -869,12 +881,19 @@ namespace Hackerman
             {
                 if (SingleKeyPress(Keys.R))
                 {
+                    if(explosioN.Position.Width > 400 && explosioN.Position.Height > 400)
+                    {
+                        Rectangle newerRec = new Rectangle(-10000, 10000, 10, 10);
+                        explosioN.Position = newerRec;
+                    }
                     if (bombs.Count > 0)
                     {
                         allowedExplosion = true;
                         explosioN.X = _arrow.X;
                         explosioN.Y = _arrow.Y;
                         bombs.Pop();
+                        offset -= 50;
+
                     }
                 }
                 if (allowedExplosion)
@@ -960,6 +979,12 @@ namespace Hackerman
                 
                 foreach (var item in laserShots)
                 {
+                    if(item.Position.X+15 > GraphicsDevice.Viewport.Width || item.Position.X-15<0 ||
+                        item.Position.Y+100 > GraphicsDevice.Viewport.Height || item.Position.Y -15 < 0)
+                    {
+                        item.Visible = false;
+                    }
+                     
                     if (item.Visible)
                     {
                       item.Shoot(_arrow);
