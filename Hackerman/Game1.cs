@@ -1033,7 +1033,7 @@ namespace Hackerman
 
                         }
 
-                        if(incomingEnemies[i].AttackPlayer(_arrow) == true)
+                        if(incomingEnemies[i].AttackPlayer(_arrow) == true && incomingEnemies[i].Strength != 0)
                         {
                             for (int j = 0; j < incomingEnemies.Count; j++)
                             {
