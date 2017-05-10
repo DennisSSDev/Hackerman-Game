@@ -77,6 +77,9 @@ namespace Hackerman
         Song threeHundred;
         SoundEffect mSound;
         SoundEffect hitSound;
+        Song bustin0;
+        Song trueSurv;
+        Song westSide0;
 
         // Menu Rectangles 
         Rectangle play = new Rectangle(0, 200, 379, 86);
@@ -606,6 +609,7 @@ namespace Hackerman
             oneHealth = Content.Load<Texture2D>("1-3 Health");
             noHealth = Content.Load<Texture2D>("0 Health");
             hackSprite = Content.Load<Texture2D>("HackSprite");
+
             // For some reason the cooldowns didn't get through
             coolDownStart = Content.Load<Texture2D>("CooldownStart");
             coolDownOne = Content.Load<Texture2D>("CooldownOne");
@@ -621,6 +625,9 @@ namespace Hackerman
             mSound = Content.Load<SoundEffect>("mSound");
             threeHundred = Content.Load<Song>("300MB");
             hitSound = Content.Load<SoundEffect>("hitSound");
+            trueSurv = Content.Load<Song>("trueSurv");
+            bustin0 = Content.Load<Song>("bustin");
+            westSide0 = Content.Load<Song>("westSide");
             MediaPlayer.Play(threeHundred);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = .15f;
@@ -1175,6 +1182,30 @@ namespace Hackerman
                 {
                     cState = GameState.Menu;
                 }
+                if(SingleKeyPress(Keys.T))
+                {
+                    MediaPlayer.Play(trueSurv);
+                    MediaPlayer.IsRepeating = true;
+                    MediaPlayer.Volume = .15f;
+                }
+                if (SingleKeyPress(Keys.B))
+                {
+                    MediaPlayer.Play(bustin0);
+                    MediaPlayer.IsRepeating = true;
+                    MediaPlayer.Volume = .15f;
+                }
+                if (SingleKeyPress(Keys.W))
+                {
+                    MediaPlayer.Play(westSide0);
+                    MediaPlayer.IsRepeating = true;
+                    MediaPlayer.Volume = .15f;
+                }
+                if (SingleKeyPress(Keys.Y))
+                {
+                    MediaPlayer.Play(threeHundred);
+                    MediaPlayer.IsRepeating = true;
+                    MediaPlayer.Volume = .15f;
+                }
             }
             else if(cState == GameState.Between)
             {
@@ -1249,7 +1280,7 @@ namespace Hackerman
                 spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 600, 450), Color.Black * .8f);
                 spriteBatch.DrawString(menuFont, "CONTROLS", new Vector2(150, 175), Color.White);
                 spriteBatch.DrawString(controlFont, "Move up/down/left/right: W/S/A/D", new Vector2(150, 250), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "Fire: Left click", new Vector2(150, 300), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Fire: Left click     Bomb: R", new Vector2(150, 300), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Aim: Move mouse", new Vector2(150, 350), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Pause: 'P'", new Vector2(150, 400), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Turn up volume: -> Turn down volume: <-", new Vector2(150, 450), Color.LimeGreen);
@@ -1429,7 +1460,7 @@ namespace Hackerman
                 spriteBatch.Draw(title, hack, Color.White);
                 spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(250, 560), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "True Survivor - Press T", new Vector2(270, 300), Color.LimeGreen);
-                spriteBatch.DrawString(controlFont, "300 MB - Press 3", new Vector2(310, 500), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "300 MB - Press Y", new Vector2(310, 500), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "West Side Lane - Press W", new Vector2(255, 400), Color.LimeGreen);
                 spriteBatch.DrawString(controlFont, "Bustin' - Press B", new Vector2(315, 200), Color.LimeGreen);
             }
