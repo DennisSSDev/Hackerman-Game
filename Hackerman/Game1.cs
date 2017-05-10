@@ -85,6 +85,12 @@ namespace Hackerman
         Rectangle exit = new Rectangle(0, 500, 379, 86);
         Rectangle hack = new Rectangle( 125, 25, 948, 116);
 
+        // Music Rectangles 
+        Rectangle bustin = new Rectangle(300, 200, 250, 40);
+        Rectangle trueSurvivor = new Rectangle(260, 300, 325, 40);
+        Rectangle westSide = new Rectangle(250, 400, 350, 40);
+        Rectangle threeMB = new Rectangle(300, 500, 250, 40);
+
         /* Animation 
         int frame;
         double timeCounter;
@@ -1415,8 +1421,17 @@ namespace Hackerman
             if (cState == GameState.Edit)
             {
                 spriteBatch.Draw(bareMenu, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                spriteBatch.Draw(menuRectangle, new Rectangle(GraphicsDevice.Viewport.Width / 9, GraphicsDevice.Viewport.Height / 4, 600, 450), Color.Black * .8f);
+                spriteBatch.Draw(coolDownStart, bustin, Color.White);
+                spriteBatch.Draw(coolDownStart, trueSurvivor, Color.White);
+                spriteBatch.Draw(coolDownStart, threeMB, Color.White);
+                spriteBatch.Draw(coolDownStart, westSide, Color.White);
                 spriteBatch.Draw(title, hack, Color.White);
-                spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(150, 560), Color.White);
+                spriteBatch.DrawString(controlFont, "Push Enter to return to menu", new Vector2(250, 560), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "True Survivor - Press T", new Vector2(270, 300), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "300 MB - Press 3", new Vector2(310, 500), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "West Side Lane - Press W", new Vector2(255, 400), Color.LimeGreen);
+                spriteBatch.DrawString(controlFont, "Bustin' - Press B", new Vector2(315, 200), Color.LimeGreen);
             }
             spriteBatch.End();
             base.Draw(gameTime);
